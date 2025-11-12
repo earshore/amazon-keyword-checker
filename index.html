@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<!-- saved from url=(0250)file:///D:/Users/Administrator/Desktop/%E4%BA%9A%E9%A9%AC%E9%80%8A%E6%96%87%E6%A1%88/%E4%BA%9A%E9%A9%AC%E9%80%8A%E5%85%B3%E9%94%AE%E8%AF%8D%E5%9F%8B%E8%AF%8D%E6%9F%A5%E8%AF%A2%E5%B7%A5%E5%85%B7%20_%20%E4%BC%98%E5%8C%96%E5%B8%83%E5%B1%80%E7%89%88.html -->
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>亚马逊关键词埋词查询工具 | 优化布局版</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f6f7fb;
+            color: #2c3e50;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-bottom: 1px solid #34495e;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .input-area {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .textarea-container {
+            position: relative;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            border: 1px solid #dcdfe6;
+            border-radius: 6px;
+            resize: none;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            background-color: #fafbfc;
+            transition: height 0.3s ease-in-out;
+            overflow: hidden;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+        
+        /* .resize-handle {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: #eaecef;
+            cursor: ns-resize;
+            border-radius: 0 0 6px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        } */
+        
+        /* 高亮样式 */
+        .highlight {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        /* 高亮容器 */
+        .highlight-container {
+            position: relative;
+            margin-top: 10px;
+            padding: 16px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            background-color: #ffffff;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: inherit;
+            font-size: 1rem;
+            line-height: 1.7;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        /* 高亮容器标题 */
+        .highlight-container::before {
+            content: '已匹配关键词高亮显示：';
+            font-weight: bold;
+            color: #27ae60;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        /* 无匹配关键词提示 */
+        .no-match-message {
+            color: #e74c3c;
+            font-weight: bold;
+            text-align: center;
+            display: block;
+            padding: 20px;
+        }
+        
+        /* .resize-handle::after {
+            content: "";
+            width: 30px;
+            height: 3px;
+            background: #bdc3c7;
+            border-radius: 2px;
+        } */
+        
+        /* .resize-handle:hover {
+            background: #d5dbdb;
+        } */
+        
+        /* .resize-handle:hover::after {
+            background: #7f8c8d;
+        } */
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .check-btn {
+            background: #3498db;
+            color: white;
+            flex: 1;
+        }
+        
+        .check-btn:hover {
+            background: #2980b9;
+        }
+        
+        .reset-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background: #c0392b;
+        }
+        
+        .input-reset-btn, .input-copy-btn {
+            background: #ecf0f1;
+            color: #7f8c8d;
+            border: 1px solid #dcdfe6;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .input-reset-btn:hover, .input-copy-btn:hover {
+            background: #e0e6e8;
+            color: #2c3e50;
+        }
+        
+        .input-copy-btn {
+            background: #3498db;
+            color: white;
+        }
+        
+        .input-copy-btn:hover {
+            background: #2980b9;
+        }
+        
+        .input-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 150px;
+        }
+        
+        .duplicate-warning {
+            background: #ffebee;
+            border-radius: 6px;
+            padding: 12px 15px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #e74c3c;
+            border: 1px solid #ffcdd2;
+            display: none;
+        }
+        
+        .duplicate-keyword {
+            background: #ffcdd2;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 2px;
+            font-weight: 500;
+        }
+        
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eaecef;
+        }
+        
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        
+        .modal-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            order: -1; /* 将统计信息移到最上方 */
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+        
+        .filter-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #eaecef;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
+        
+        .filter-container label {
+            margin-left: 8px;
+            font-size: 0.9rem;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+        
+        .result-container-wrapper {
+            position: relative;
+            border: 1px solid #eaecef;
+            border-radius: 6px;
+            background: white;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+            min-height: 150px;
+            max-height: 500px;
+            overflow: hidden;
+        }
+        
+        .result-container {
+            height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            background: white;
+            border: 1px solid #f0f2f5;
+            transition: all 0.2s;
+        }
+        
+        .result-item:hover {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            transform: translateY(-1px);
+        }
+        
+        .phrase {
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .status {
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin: 0 10px;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .true {
+            background: #e8f5e9;
+            color: #27ae60;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .false {
+            background: #ffebee;
+            color: #e74c3c;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .copy-btn {
+            background: #f8f9fa;
+            color: #3498db;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: #e3f2fd;
+            border-color: #3498db;
+        }
+        
+        .copy-success {
+            background: #e8f5e9;
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+        
+        .copy-all-btn {
+            background: #3498db;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: auto;
+        }
+        
+        .copy-all-btn:hover {
+            background: #2980b9;
+        }
+        
+        .summary-message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .success {
+            background: #e8f5e9;
+            color: #27ae60;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .warning {
+            background: #ffebee;
+            color: #e74c3c;
+            border: 1px solid #ffcdd2;
+        }
+        
+        .low-rate {
+            color: #e74c3c;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: #95a5a6;
+            padding: 40px 20px;
+            font-size: 0.95rem;
+        }
+        
+        /* 新增样式：匹配率显示在标题右侧 */
+        .match-rate-display {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-left: 15px;
+            padding: 5px 12px;
+            border-radius: 4px;
+            background: #f8f9fa;
+            border: 1px solid #eaecef;
+        }
+        
+        .match-rate-success {
+            background: #e8f5e9;
+            color: #27ae60;
+            border-color: #c8e6c9;
+        }
+        
+        .match-rate-warning {
+            background: #ffebee;
+            color: #e74c3c;
+            border-color: #ffcdd2;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+            
+            body {
+                padding: 0;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .section-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .input-buttons {
+                width: 100%;
+                flex-direction: row;
+            }
+            
+            .filter-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .copy-all-btn {
+                margin-top: 10px;
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .result-item-actions {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .modal-content {
+                margin: 0;
+                width: 100%;
+                height: 100%;
+                max-height: 100%;
+                border-radius: 0;
+            }
+            
+            .modal-stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .check-btn, .reset-btn {
+                width: 100%;
+            }
+            
+            /* 移动端适配：匹配率显示在标题下方 */
+            .modal-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .match-rate-display {
+                margin-left: 0;
+                align-self: stretch;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body inmaintabuse="1">
+    <div class="container">
+        <header>
+            <h1>亚马逊关键词埋词查询工具</h1>
+            <p>优化布局版 - 快速检测产品文案中是否包含所有关键词组</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-area">
+                <div class="section-title">
+                    <span>关键词列表（每行一个或逗号分隔）</span>
+                    <div class="input-buttons">
+                        <button class="input-copy-btn" onclick="copyAllPhrases()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 5H6C4.89543 5 4 5.89543 4 7V19C4 20.1046 4.89543 21 6 21H16C17.1046 21 18 20.1046 18 19V18M8 5C8 4.46957 8.21071 3.96086 8.58579 3.58579C8.96086 3.21071 9.46957 3 10 3H14C14.5304 3 15.0391 3.21071 15.4142 3.58579C15.7893 3.96086 16 4.46957 16 5C16 5.53043 15.7893 6.03914 15.4142 6.41421C15.0391 6.78929 14.5304 7 14 7H10C9.46957 7 8.96086 6.78929 8.58579 6.41421C8.21071 6.03914 8 5.53043 8 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            复制关键词
+                        </button>
+                        <button class="input-reset-btn" onclick="resetPhrases()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2"></path>
+                            </svg>
+                            重置关键词
+                        </button>
+                    </div>
+                </div>
+                <div class="textarea-container">
+                    <textarea id="phrases" placeholder="请输入关键词组，可用逗号或换行分隔
+例如：
+Weihnachtsbaumspitze glänzend, Christbaumspitze Glas，Tannenbaum Spitze Glas
+Christbaumschmuck Spitze Glas,Christbaumspitze aus Glas für Weihnachten" oninput="checkDuplicates()"></textarea>
+                    <!-- resize-handle removed -->
+                </div>
+                <div id="duplicate-warning" class="duplicate-warning" style="display: none;"></div>
+            </div>
+            
+            <div class="input-area">
+                <div class="section-title">
+                    <span>产品文案</span>
+                    <div class="input-buttons">
+                        <button class="input-copy-btn" onclick="copyContent()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 5H6C4.89543 5 4 5.89543 4 7V19C4 20.1046 4.89543 21 6 21H16C17.1046 21 18 20.1046 18 19V18M8 5C8 4.46957 8.21071 3.96086 8.58579 3.58579C8.96086 3.21071 9.46957 3 10 3H14C14.5304 3 15.0391 3.21071 15.4142 3.58579C15.7893 3.96086 16 4.46957 16 5C16 5.53043 15.7893 6.03914 15.4142 6.41421C15.0391 6.78929 14.5304 7 14 7H10C9.46957 7 8.96086 6.78929 8.58579 6.41421C8.21071 6.03914 8 5.53043 8 5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            复制文案
+                        </button>
+                        <button class="input-reset-btn" onclick="resetContent()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2"></path>
+                            </svg>
+                            重置文案
+                        </button>
+                    </div>
+                </div>
+                <div class="textarea-container">
+                     <textarea id="content" placeholder="请输入要检查的产品文案内容
+例如：
+Weihnachtsbaumspitze Glänzend aus Glas – Edle 28cm Tannenbaumspitze für den Christbaum als traditioneller Baumschmuck für eine festliche &amp; elegante Krönung" style="height: auto; min-height: 150px;"></textarea>
+                  </div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="check-btn" onclick="checkPhrases()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 12L11 14L15 10M12 3C13.1819 3 14.3522 3.23279 15.4442 3.68508C16.5361 4.13738 17.5282 4.80031 18.364 5.63604C19.1997 6.47177 19.8626 7.46392 20.3149 8.55585C20.7672 9.64778 21 10.8181 21 12C21 13.1819 20.7672 14.3522 20.3149 15.4442C19.8626 16.5361 19.1997 17.5282 18.364 18.364C17.5282 19.1997 16.5361 19.8626 15.4442 20.3149C14.3522 20.7672 13.1819 21 12 21C10.8181 21 9.64778 20.7672 8.55585 20.3149C7.46392 19.8626 6.47177 19.1997 5.63604 18.364C4.80031 17.5282 4.13738 16.5361 3.68508 15.4442C3.23279 14.3522 3 13.1819 3 12C3 9.61305 3.94821 7.32387 5.63604 5.63604C7.32387 3.94821 9.61305 3 12 3Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    检查关键词
+                </button>
+                <button class="reset-btn" onclick="resetAll()">重置所有</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 结果弹窗 -->
+    <div id="resultModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">检查结果</h2>
+                <div id="match-rate-display" class="match-rate-display match-rate-warning" style="display: block;">部分关键词组未找到！匹配率：70.00%</div>
+                <button class="close-btn" onclick="closeModal()">×</button>
+            </div>
+            
+            <!-- 统计信息移到最上方 -->
+            <div class="modal-stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="total-count">10</div>
+                    <div class="stat-label">关键词总数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="matched-count">7</div>
+                    <div class="stat-label">匹配数量</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value low-rate" id="match-rate">70.00%</div>
+                    <div class="stat-label">匹配率</div>
+                </div>
+            </div>
+            
+            <div class="filter-container">
+                <div>
+                    <input type="checkbox" id="hide-matched" onchange="toggleMatchedResults()" checked="">
+                    <label for="hide-matched">只显示未匹配的关键词</label>
+                </div>
+                <button class="copy-all-btn" onclick="copyAllUnmatched()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 5H6C4.89543 5 4 5.89543 4 7V19C4 20.1046 4.89543 21 6 21H16C17.1046 21 18 20.1046 18 19V18M8 5C8 4.46957 8.21071 3.96086 8.58579 3.58579C8.96086 3.21071 9.46957 3 10 3H14C14.5304 3 15.0391 3.21071 15.4142 3.58579C15.7893 3.96086 16 4.46957 16 5C16 5.53043 15.7893 6.03914 15.4142 6.41421C15.0391 6.78929 14.5304 7 14 7H10C9.46957 7 8.96086 6.78929 8.58579 6.41421C8.21071 6.03914 8 5.53043 8 5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    复制所有未匹配关键词
+                </button>
+            </div>
+            
+            <div class="result-container-wrapper">
+                <div class="result-container" id="results">
+                        <div class="result-item">
+                            <span class="phrase">guirlande sapin de noel vert</span>
+                            <span class="status false">
+                                未匹配
+                            </span>
+                            <button class="copy-btn" onclick="copyKeyword(&#39;guirlande sapin de noel vert&#39;)">复制</button>
+                        </div>
+                    
+                        <div class="result-item">
+                            <span class="phrase">guirlande sapin artificiel</span>
+                            <span class="status false">
+                                未匹配
+                            </span>
+                            <button class="copy-btn" onclick="copyKeyword(&#39;guirlande sapin artificiel&#39;)">复制</button>
+                        </div>
+                    
+                        <div class="result-item">
+                            <span class="phrase">guirlande faux sapin</span>
+                            <span class="status false">
+                                未匹配
+                            </span>
+                            <button class="copy-btn" onclick="copyKeyword(&#39;guirlande faux sapin&#39;)">复制</button>
+                        </div>
+                    </div>
+                <!-- resize-handle removed -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let lastResults = [];
+        let lastMatchedCount = 0;
+        let lastTotalCount = 0;
+        let lastMatchRate = 0;
+        
+        // 让textarea根据内容自动调整高度
+        function autoResizeTextarea() {
+            const textarea = document.getElementById('content');
+            if (textarea) {
+                textarea.style.height = 'auto';
+                textarea.style.height = (textarea.scrollHeight) + 'px';
+            }
+        }
+
+        // 初始化事件监听
+        document.addEventListener('DOMContentLoaded', function() {
+            const textarea = document.getElementById('content');
+            if (textarea) {
+                // 监听输入事件，自动调整高度
+                textarea.addEventListener('input', autoResizeTextarea);
+                // 初始化时调用一次，确保正确高度
+                autoResizeTextarea();
+            }
+        });
+
+        // resize-handle functionality removed
+        
+        function normalizeText(text) {
+            let normalized = text.toLowerCase();
+            normalized = normalized.replace(/ {2,}/g, ' ');
+            return normalized;
+        }
+        
+        function checkDuplicates() {
+            const phrasesInput = document.getElementById('phrases').value.trim();
+            const warningContainer = document.getElementById('duplicate-warning');
+            
+            if (!phrasesInput) {
+                warningContainer.style.display = 'none';
+                return;
+            }
+            
+            let phrases = [];
+            const lines = phrasesInput.split('\n');
+            
+            lines.forEach(line => {
+                const commaSeparated = line.split(/[,，]/);
+                commaSeparated.forEach(item => {
+                    const trimmed = item.trim();
+                    if (trimmed) {
+                        phrases.push(trimmed);
+                    }
+                });
+            });
+            
+            const duplicates = findDuplicates(phrases);
+            
+            if (duplicates.length > 0) {
+                let warningHTML = '检测到重复关键词：';
+                duplicates.forEach(phrase => {
+                    warningHTML += `<span class="duplicate-keyword">${phrase}</span>`;
+                });
+                warningContainer.innerHTML = warningHTML;
+                warningContainer.style.display = 'block';
+            } else {
+                warningContainer.style.display = 'none';
+            }
+        }
+        
+        function findDuplicates(phrases) {
+            const seen = {};
+            const duplicates = [];
+            
+            phrases.forEach(phrase => {
+                const normalized = normalizeText(phrase);
+                if (seen[normalized]) {
+                    if (!duplicates.includes(phrase)) {
+                        duplicates.push(phrase);
+                    }
+                } else {
+                    seen[normalized] = true;
+                }
+            });
+            
+            return duplicates;
+        }
+        
+        // 复制所有关键词组
+        function copyAllPhrases() {
+            const phrasesInput = document.getElementById('phrases').value.trim();
+            
+            if (!phrasesInput) {
+                alert('关键词组为空，无法复制');
+                return;
+            }
+            
+            const textArea = document.createElement('textarea');
+            textArea.value = phrasesInput;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                
+                // 显示复制成功反馈
+                const copyBtn = document.querySelectorAll('.input-copy-btn')[0];
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '已复制';
+                copyBtn.style.background = '#27ae60';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = '#3498db';
+                }, 2000);
+            } catch (err) {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动选择并复制文本');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // 复制文案内容
+        // 初始化代码 - 不再为textarea添加点击事件，只通过折叠指示器触发
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化时创建折叠指示器
+            updateCollapseIndicator('phrases');
+            updateCollapseIndicator('content');
+            
+            // 添加窗口大小变化监听器
+            window.addEventListener('resize', function() {
+                if (highlightElement && highlightElement.style.display === 'block') {
+                    adjustHighlightHeight();
+                }
+            });
+            
+            // 监听可能导致内容变化的事件
+            const phrasesTextarea = document.getElementById('phrases');
+            const contentTextarea = document.getElementById('content');
+            
+            if (phrasesTextarea) {
+                phrasesTextarea.addEventListener('input', function() {
+                    // 内容变化时延迟检查并调整高度
+                    setTimeout(function() {
+                        if (highlightElement && highlightElement.style.display === 'block') {
+                            adjustHighlightHeight();
+                        }
+                    }, 100);
+                });
+            }
+            
+            if (contentTextarea) {
+                contentTextarea.addEventListener('input', function() {
+                    // 内容变化时延迟检查并调整高度
+                    setTimeout(function() {
+                        if (highlightElement && highlightElement.style.display === 'block') {
+                            adjustHighlightHeight();
+                        }
+                    }, 100);
+                });
+            }
+        });
+        
+        function copyContent() {
+            const contentInput = document.getElementById('content').value.trim();
+            
+            if (!contentInput) {
+                alert('产品文案内容为空，无法复制');
+                return;
+            }
+            
+            const textArea = document.createElement('textarea');
+            textArea.value = contentInput;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                
+                // 显示复制成功反馈
+                const copyBtn = document.querySelectorAll('.input-copy-btn')[1];
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '已复制';
+                copyBtn.style.background = '#27ae60';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.style.background = '#3498db';
+                }, 2000);
+            } catch (err) {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动选择并复制文本');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        function checkPhrases() {
+            const phrasesInput = document.getElementById('phrases').value.trim();
+            const contentInput = document.getElementById('content').value.trim();
+            const resultsContainer = document.getElementById('results');
+            const totalCountEl = document.getElementById('total-count');
+            const matchedCountEl = document.getElementById('matched-count');
+            const matchRateEl = document.getElementById('match-rate');
+            const matchRateDisplay = document.getElementById('match-rate-display');
+            
+            if (!phrasesInput || !contentInput) {
+                alert('请先输入关键词组和产品文案内容');
+                return;
+            }
+            
+            let phrases = [];
+            const lines = phrasesInput.split('\n');
+            
+            lines.forEach(line => {
+                const commaSeparated = line.split(/[,，]/);
+                commaSeparated.forEach(item => {
+                    const trimmed = item.trim();
+                    if (trimmed) {
+                        phrases.push(trimmed);
+                    }
+                });
+            });
+            
+            if (phrases.length === 0) {
+                resultsContainer.innerHTML = '<p class="no-results">未检测到有效的关键词组</p>';
+                resetStats();
+                return;
+            }
+            
+            // 去重处理
+            const uniquePhrases = [];
+            const seen = {};
+            
+            phrases.forEach(phrase => {
+                const normalized = normalizeText(phrase);
+                if (!seen[normalized]) {
+                    seen[normalized] = true;
+                    uniquePhrases.push(phrase);
+                }
+            });
+            
+            totalCountEl.textContent = uniquePhrases.length;
+            lastTotalCount = uniquePhrases.length;
+            
+            const normalizedContent = normalizeText(contentInput);
+            let matchedCount = 0;
+            lastResults = [];
+            
+            uniquePhrases.forEach(phrase => {
+                if (phrase) {
+                    const normalizedPhrase = normalizeText(phrase);
+                    const found = normalizedContent.includes(normalizedPhrase);
+                    
+                    if (found) matchedCount++;
+                    
+                    lastResults.push({
+                        phrase: phrase,
+                        found: found
+                    });
+                }
+            });
+            
+            matchedCountEl.textContent = matchedCount;
+            lastMatchedCount = matchedCount;
+            lastMatchRate = (matchedCount / uniquePhrases.length * 100);
+            const matchRateText = lastMatchRate.toFixed(2);
+            matchRateEl.textContent = `${matchRateText}%`;
+            
+            if (lastMatchRate < 80) {
+                matchRateEl.classList.add('low-rate');
+            } else {
+                matchRateEl.classList.remove('low-rate');
+            }
+            
+            // 更新标题右侧的匹配率显示
+            if (lastMatchedCount === lastTotalCount) {
+                matchRateDisplay.textContent = `所有关键词组都已找到！匹配率：${matchRateText}%`;
+                matchRateDisplay.className = 'match-rate-display match-rate-success';
+            } else {
+                matchRateDisplay.textContent = `部分关键词组未找到！匹配率：${matchRateText}%`;
+                matchRateDisplay.className = 'match-rate-display match-rate-warning';
+            }
+            matchRateDisplay.style.display = 'block';
+            
+            renderResults();
+            
+            // 隐藏产品文案textarea
+            const contentTextarea = document.getElementById('content');
+            contentTextarea.style.display = 'none';
+            
+            // 高亮显示已匹配的关键词（持续高亮）
+            highlightKeywords();
+            
+            openModal();
+        }
+        
+        function renderResults() {
+            const resultsContainer = document.getElementById('results');
+            const hideMatched = document.getElementById('hide-matched').checked;
+            
+            if (lastResults.length === 0) {
+                resultsContainer.innerHTML = '<p class="no-results">请先输入关键词组和产品文案内容，然后点击"检查关键词"按钮</p>';
+                return;
+            }
+            
+            let resultsHTML = '';
+            let displayedCount = 0;
+            
+            lastResults.forEach(result => {
+                if (hideMatched && result.found) {
+                    return;
+                }
+                
+                const isMobile = window.innerWidth <= 600;
+                
+                if (isMobile) {
+                    resultsHTML += `
+                        <div class="result-item">
+                            <span class="phrase">${result.phrase}</span>
+                            <div class="result-item-actions">
+                                <span class="status ${result.found ? 'true' : 'false'}">
+                                    ${result.found ? '已匹配' : '未匹配'}
+                                </span>
+                                <button class="copy-btn" onclick="copyKeyword('${result.phrase.replace(/'/g, "\\'")}')">复制</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultsHTML += `
+                        <div class="result-item">
+                            <span class="phrase">${result.phrase}</span>
+                            <span class="status ${result.found ? 'true' : 'false'}">
+                                ${result.found ? '已匹配' : '未匹配'}
+                            </span>
+                            <button class="copy-btn" onclick="copyKeyword('${result.phrase.replace(/'/g, "\\'")}')">复制</button>
+                        </div>
+                    `;
+                }
+                
+                displayedCount++;
+            });
+            
+            if (displayedCount === 0 && hideMatched) {
+                resultsHTML = '<p class="no-results">所有关键词都已匹配！</p>';
+            }
+            
+            resultsContainer.innerHTML = resultsHTML;
+        }
+        
+        function toggleMatchedResults() {
+            renderResults();
+        }
+        
+        function resetStats() {
+            document.getElementById('total-count').textContent = '0';
+            document.getElementById('matched-count').textContent = '0';
+            document.getElementById('match-rate').textContent = '0%';
+            document.getElementById('match-rate').classList.remove('low-rate');
+            document.getElementById('match-rate-display').style.display = 'none';
+            lastResults = [];
+            lastMatchedCount = 0;
+            lastTotalCount = 0;
+            lastMatchRate = 0;
+        }
+        
+        function resetContent() {
+            const contentTextarea = document.getElementById('content');
+            contentTextarea.value = '';
+            contentTextarea.style.display = 'block'; // 重置时恢复textarea显示
+            document.getElementById('hide-matched').checked = true;
+            document.getElementById('results').innerHTML = '<p class="no-results">请先输入关键词组和产品文案内容，然后点击"检查关键词"按钮</p>';
+            resetStats();
+            removeHighlight(); // 重置时移除高亮
+        }
+        
+        function resetPhrases() {
+            const contentTextarea = document.getElementById('content');
+            contentTextarea.style.display = 'block'; // 重置时恢复textarea显示
+            document.getElementById('phrases').value = '';
+            document.getElementById('duplicate-warning').style.display = 'none';
+            document.getElementById('hide-matched').checked = true;
+            document.getElementById('results').innerHTML = '<p class="no-results">请先输入关键词组和产品文案内容，然后点击"检查关键词"按钮</p>';
+            resetStats();
+            removeHighlight(); // 重置时移除高亮
+        }
+        
+        function resetAll() {
+            resetPhrases();
+            resetContent();
+        }
+        
+        function copyKeyword(keyword) {
+            const textArea = document.createElement('textarea');
+            textArea.value = keyword;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                
+                const buttons = document.querySelectorAll('.copy-btn');
+                buttons.forEach(btn => {
+                    if (btn.textContent === '复制' && btn.previousElementSibling.previousElementSibling.textContent === keyword) {
+                        btn.textContent = '已复制';
+                        btn.classList.add('copy-success');
+                        
+                        setTimeout(() => {
+                            btn.textContent = '复制';
+                            btn.classList.remove('copy-success');
+                        }, 2000);
+                    }
+                });
+            } catch (err) {
+                console.error('复制失败:', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        function copyAllUnmatched() {
+            const unmatchedPhrases = [];
+            
+            lastResults.forEach(result => {
+                if (!result.found) {
+                    unmatchedPhrases.push(result.phrase);
+                }
+            });
+            
+            if (unmatchedPhrases.length === 0) {
+                alert('没有未匹配的关键词');
+                return;
+            }
+            
+            const textToCopy = unmatchedPhrases.join('\n');
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                
+                const copyBtn = document.querySelector('.copy-all-btn');
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '已复制';
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                }, 2000);
+            } catch (err) {
+                console.error('复制失败:', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        // 保存高亮元素引用
+        let highlightElement = null;
+        
+        // 保存textarea折叠状态
+        let isPhrasesCollapsed = false;
+        let isContentCollapsed = false;
+        
+        // 保存原始高度
+        let originalPhrasesHeight = null;
+        let originalContentHeight = null;
+        
+        // 折叠时的高度
+        const COLLAPSED_HEIGHT = 60; // 60px高度，大约显示一行
+        
+        // 处理textarea折叠和展开
+        function toggleTextarea(elementId, event) {
+            const textarea = document.getElementById(elementId);
+            const isPhrases = elementId === 'phrases';
+            
+            // 首次获取原始高度
+            if ((isPhrases && originalPhrasesHeight === null) || 
+                (!isPhrases && originalContentHeight === null)) {
+                if (isPhrases) {
+                    originalPhrasesHeight = textarea.style.height || '200px';
+                } else {
+                    originalContentHeight = textarea.style.height || '300px';
+                }
+            }
+            
+            // 切换折叠状态
+            if (isPhrases) {
+                isPhrasesCollapsed = !isPhrasesCollapsed;
+                textarea.style.height = isPhrasesCollapsed ? COLLAPSED_HEIGHT + 'px' : originalPhrasesHeight;
+            } else {
+                isContentCollapsed = !isContentCollapsed;
+                textarea.style.height = isContentCollapsed ? COLLAPSED_HEIGHT + 'px' : originalContentHeight;
+            }
+            
+            // 更新折叠指示器
+        updateCollapseIndicator(elementId);
+        
+        // 阻止默认行为，防止文本选择
+        if (event) {
+            event.stopPropagation();
+        }
+    }
+    
+    // 更新折叠指示器
+    function updateCollapseIndicator(elementId) {
+            const textarea = document.getElementById(elementId);
+            const isPhrases = elementId === 'phrases';
+            const isCollapsed = isPhrases ? isPhrasesCollapsed : isContentCollapsed;
+            
+            // 获取或创建指示器
+            let indicator = textarea.parentElement.querySelector('.collapse-indicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.className = 'collapse-indicator';
+                textarea.parentElement.style.position = 'relative';
+                textarea.parentElement.appendChild(indicator);
+            }
+            
+            // 设置指示器样式
+            indicator.style.cssText = `
+                position: absolute;
+                right: 10px;
+                bottom: 10px;
+                cursor: pointer;
+                font-size: 12px;
+                font-weight: 500;
+                padding: 4px 8px;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+                z-index: 10;
+                border: 1px solid transparent;
+                user-select: none;
+            `;
+            
+            // 根据折叠状态更新样式和文本
+            if (isCollapsed) {
+                indicator.textContent = '展开 ▲';
+                indicator.style.color = '#27ae60';
+                indicator.style.backgroundColor = 'rgba(46, 204, 113, 0.1)';
+                indicator.style.borderColor = 'rgba(46, 204, 113, 0.3)';
+            } else {
+                indicator.textContent = '折叠 ▼';
+                indicator.style.color = '#e74c3c';
+                indicator.style.backgroundColor = 'rgba(231, 76, 60, 0.1)';
+                indicator.style.borderColor = 'rgba(231, 76, 60, 0.3)';
+            }
+            
+            // 为指示器添加点击事件
+            indicator.onclick = function(e) {
+                toggleTextarea(elementId, e);
+                e.stopPropagation();
+            };
+            
+            // 添加悬停效果
+            indicator.onmouseenter = function() {
+                if (isCollapsed) {
+                    this.style.backgroundColor = 'rgba(46, 204, 113, 0.2)';
+                    this.style.borderColor = '#27ae60';
+                } else {
+                    this.style.backgroundColor = 'rgba(231, 76, 60, 0.2)';
+                    this.style.borderColor = '#e74c3c';
+                }
+                this.style.transform = 'scale(1.05)';
+            };
+            
+            indicator.onmouseleave = function() {
+                updateCollapseIndicator(elementId); // 恢复原始样式
+            }
+    }
+        
+        function highlightKeywords() {
+            // 获取已匹配的关键词
+            const matchedKeywords = lastResults
+                .filter(result => result.found)
+                .map(result => result.phrase);
+            
+            const contentTextarea = document.getElementById('content');
+            const contentContainer = contentTextarea.parentElement;
+            const content = contentTextarea.value;
+            
+            // 移除已存在的高亮元素
+            removeHighlight();
+            
+            // 创建高亮div元素
+            highlightElement = document.createElement('div');
+            highlightElement.id = 'highlight-content';
+            highlightElement.className = 'highlight-container';
+            
+            // 构建正则表达式，先按长度降序排序
+            let sortedKeywords = [...matchedKeywords].sort((a, b) => b.length - a.length);
+            
+            // 检测并合并交叉的关键词组
+            // 我们需要找出在文本中可能交叉的关键词组，并将它们合并为一个完整的范围
+            // 首先，我们需要查找文本中所有关键词的匹配位置
+            const contentLower = content.toLowerCase();
+            const allMatches = [];
+            
+            // 找出所有关键词在文本中的所有匹配位置
+            sortedKeywords.forEach(keyword => {
+                const keywordLower = keyword.toLowerCase();
+                let startIndex = 0;
+                
+                while ((startIndex = contentLower.indexOf(keywordLower, startIndex)) !== -1) {
+                    allMatches.push({
+                        start: startIndex,
+                        end: startIndex + keyword.length,
+                        keyword: keyword
+                    });
+                    startIndex += 1; // 移动到下一个字符，避免零长度匹配的死循环
+                }
+            });
+            
+            // 合并重叠或相邻的匹配范围
+            let mergedMatches = [];
+            if (allMatches.length > 0) {
+                // 按起始位置排序
+                allMatches.sort((a, b) => a.start - b.start);
+                
+                mergedMatches = [allMatches[0]];
+                
+                for (let i = 1; i < allMatches.length; i++) {
+                    const current = allMatches[i];
+                    const last = mergedMatches[mergedMatches.length - 1];
+                    
+                    // 如果当前匹配与上一个匹配重叠或相邻，则合并它们
+                    if (current.start <= last.end) {
+                        // 扩展结束位置到较大的值
+                        last.end = Math.max(last.end, current.end);
+                    } else {
+                        // 不重叠，添加为新的匹配
+                        mergedMatches.push(current);
+                    }
+                }
+            }
+            // 如果没有匹配的关键词，显示提示信息
+            if (allMatches.length === 0) {
+                const highlightedText = `<span class="no-match-message">无匹配关键词</span>`;
+                
+                highlightElement.innerHTML = highlightedText;
+                highlightElement.style.cssText = `
+                    display: none;
+                    position: relative;
+                    margin-top: 10px;
+                    padding: 12px;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 6px;
+                    background-color: #fafafa;
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                    font-family: inherit;
+                    font-size: inherit;
+                    line-height: 1.6;
+                    height: auto;
+                    overflow: hidden;
+                `;
+                
+                // 添加到容器中
+                contentContainer.appendChild(highlightElement);
+                
+                // 显示高亮内容
+                highlightElement.style.display = 'block';
+                
+                // 自动调整高度
+                adjustHighlightHeight();
+                return;
+            }
+            
+            // 使用合并后的匹配信息来构建高亮文本
+            let highlightedText = '';
+            let lastEnd = 0;
+            
+            // 处理每一个合并后的匹配
+            mergedMatches.forEach(match => {
+                // 添加匹配前的普通文本，并处理换行
+                const beforeMatch = content.substring(lastEnd, match.start);
+                highlightedText += beforeMatch.replace(/\n/g, '<br>');
+                
+                // 添加高亮的匹配文本，并处理换行
+                const matchedText = content.substring(match.start, match.end);
+                highlightedText += `<span class="highlight">${matchedText.replace(/\n/g, '<br></span><br><span class="highlight">')}</span>`;
+                
+                lastEnd = match.end;
+            });
+            
+            // 添加最后一个匹配后的普通文本，并处理换行
+            const afterLastMatch = content.substring(lastEnd);
+            highlightedText += afterLastMatch.replace(/\n/g, '<br>');
+            
+            highlightElement.innerHTML = highlightedText;
+            highlightElement.style.cssText = `
+                display: none;
+                position: relative;
+                margin-top: 10px;
+                padding: 12px;
+                border: 1px solid #e0e0e0;
+                border-radius: 6px;
+                background-color: #fafafa;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+                font-family: inherit;
+                font-size: inherit;
+                line-height: 1.6;
+                height: auto;
+                overflow: hidden;
+            `;
+            
+            // 添加到容器中
+            contentContainer.appendChild(highlightElement);
+            
+            // 显示高亮内容
+            highlightElement.style.display = 'block';
+            
+            // 自动调整高度
+            adjustHighlightHeight();
+        }
+        
+        // 自动调整高亮div的高度
+        function adjustHighlightHeight() {
+            if (!highlightElement) return;
+            
+            // 重置高度为auto以获取实际内容高度
+            highlightElement.style.height = 'auto';
+            
+            // 可以在这里添加最小高度限制（如果需要）
+            const minHeight = 50; // 最小高度50px
+            const actualHeight = highlightElement.scrollHeight;
+            
+            if (actualHeight < minHeight) {
+                highlightElement.style.height = minHeight + 'px';
+            } else {
+                highlightElement.style.height = actualHeight + 'px';
+            }
+        }
+        
+        function removeHighlight() {
+            if (highlightElement && highlightElement.parentNode) {
+                highlightElement.parentNode.removeChild(highlightElement);
+                highlightElement = null;
+            }
+        }
+        
+        function openModal() {
+            document.getElementById('resultModal').style.display = 'block';
+            // 高亮已在checkPhrases中调用，避免重复调用
+        }
+        
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+            // 不再移除高亮，实现持续高亮显示
+        }
+        
+        // 点击弹窗外部关闭弹窗
+        window.onclick = function(event) {
+            const modal = document.getElementById('resultModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+
+
+</body></html>
