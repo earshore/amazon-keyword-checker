@@ -919,11 +919,18 @@
         // MODULE 2: 关键词处理引擎 (Keyword Processing Engine)
         // ============================================
         const KeywordEngine = {
-            MAX_VARIATIONS: 20,
+            MAX_VARIATIONS: 10, // 减少变体数量
+            MAX_WORD_LENGTH: 50, // 最大单词长度限制
+            MAX_PHRASE_WORDS: 6, // 最大短语词数限制
             variationCache: new Map(), // 缓存优化
 
             // 生成词汇变体 (Generate Word Variations)
             generateVariations(word) {
+                // 长度检查 - 防止处理超长词
+                if (word.length > this.MAX_WORD_LENGTH) {
+                    return [word.toLowerCase()];
+                }
+
                 // 检查缓存
                 const cached = this.variationCache.get(word);
                 if (cached) return cached;
@@ -935,48 +942,54 @@
 
                 let count = 2;
 
-                // 优先处理不规则变化
-                for (const lang of Object.values(LanguageRules.languages)) {
-                    if (count >= this.MAX_VARIATIONS) break;
+                // 优先处理不规则变化（限制检查次数）
+                const langKeys = Object.keys(LanguageRules.languages);
+                for (let i = 0; i < langKeys.length && count < this.MAX_VARIATIONS; i++) {
+                    const lang = LanguageRules.languages[langKeys[i]];
                     
                     if (lang.irregularPlurals) {
-                        // 单数 -> 复数
+                        // 单数 -> 复数（直接查找，避免遍历）
                         if (lang.irregularPlurals[wordLower]) {
-                            for (const plural of lang.irregularPlurals[wordLower]) {
+                            const plurals = lang.irregularPlurals[wordLower].slice(0, 2); // 最多取2个
+                            for (const plural of plurals) {
                                 if (count >= this.MAX_VARIATIONS) break;
                                 variations.add(plural);
-                                variations.add(LanguageRules.removeDiacritics(plural));
-                                count += 2;
+                                count++;
                             }
                         }
                         
-                        // 复数 -> 单数
-                        for (const [singular, plurals] of Object.entries(lang.irregularPlurals)) {
-                            if (count >= this.MAX_VARIATIONS) break;
-                            if (plurals.includes(wordLower)) {
-                                variations.add(singular);
-                                count++;
+                        // 复数 -> 单数（限制检查）
+                        if (count < this.MAX_VARIATIONS) {
+                            for (const [singular, plurals] of Object.entries(lang.irregularPlurals)) {
+                                if (plurals.includes(wordLower)) {
+                                    variations.add(singular);
+                                    count++;
+                                    break; // 找到一个就停止
+                                }
                             }
                         }
                     }
                 }
 
-                // 应用规则变体
+                // 应用规则变体（仅主要语言）
                 if (count < this.MAX_VARIATIONS) {
-                    const primaryLangs = ['en', 'de', 'fr', 'es', 'it'];
+                    const primaryLangs = ['en', 'de', 'fr'];
                     
                     for (const langCode of primaryLangs) {
                         if (count >= this.MAX_VARIATIONS) break;
                         const lang = LanguageRules.languages[langCode];
                         
                         if (lang?.rules) {
-                            for (const rule of lang.rules) {
+                            // 只测试前3个规则
+                            const rules = lang.rules.slice(0, 3);
+                            for (const rule of rules) {
                                 if (count >= this.MAX_VARIATIONS) break;
                                 if (rule.pattern.test(wordLower)) {
                                     let newForm = this.applyRule(wordLower, rule);
                                     if (newForm && newForm !== wordLower && !variations.has(newForm)) {
                                         variations.add(newForm);
                                         count++;
+                                        break; // 每个语言只取一个规则变体
                                     }
                                 }
                             }
@@ -1013,14 +1026,34 @@
                 const words = keyword.split(/\s+/);
                 const matches = [];
                 
+                // 短语长度检查 - 防止处理超长短语
+                if (words.length > this.MAX_PHRASE_WORDS) {
+                    // 对于超长短语，使用简单的直接匹配
+                    const simpleRegex = new RegExp(`\\b${keyword.replace(/\s+/g, '\\s+')}\\b`, 'gi');
+                    let match;
+                    while ((match = simpleRegex.exec(text)) !== null) {
+                        if (!getMatches) return true;
+                        matches.push({
+                            start: match.index,
+                            end: match.index + match[0].length,
+                            text: match[0]
+                        });
+                    }
+                    return getMatches ? matches : (matches.length > 0);
+                }
+                
                 // 为每个词生成变体
                 const wordVariations = words.map(word => this.generateVariations(word));
                 
-                // 生成组合
+                // 生成组合（带限制）
                 const combinations = this.generateCombinations(wordVariations);
                 
+                // 限制检查的组合数量，防止超长运行
+                const MAX_COMBINATIONS = 200;
+                const limitedCombinations = combinations.slice(0, MAX_COMBINATIONS);
+                
                 // 检查所有组合
-                for (const combination of combinations) {
+                for (const combination of limitedCombinations) {
                     const pattern = combination.join('\\s+');
                     const regex = new RegExp(`\\b${pattern}\\b`, 'gi');
                     
@@ -1030,8 +1063,12 @@
                     for (const searchText of texts) {
                         regex.lastIndex = 0;
                         let match;
+                        let matchCount = 0;
+                        const MAX_MATCHES_PER_PATTERN = 50; // 每个模式最多50个匹配
                         
-                        while ((match = regex.exec(searchText)) !== null) {
+                        while ((match = regex.exec(searchText)) !== null && matchCount < MAX_MATCHES_PER_PATTERN) {
+                            matchCount++;
+                            
                             if (!getMatches) return true;
                             
                             const actualText = text.substring(match.index, match.index + match[0].length);
