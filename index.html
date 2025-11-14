@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>亚马逊关键词埋词检查工具</title>
+    <title>亚马逊关键词埋词检查工具 - 全欧洲语言支持</title>
     <style>
         * {
             margin: 0;
@@ -74,6 +74,16 @@
         .header p {
             font-size: 1.1rem;
             opacity: 0.95;
+        }
+
+        .language-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
         }
 
         .main-content {
@@ -311,11 +321,16 @@
             color: #B07C0C;
         }
 
+        .alert-info {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid #667eea;
+            color: #4a5dc7;
+        }
+
         .alert-icon {
             font-size: 20px;
         }
 
-        /* 高亮结果框样式 - 修改高度设置 */
         .highlight-result-card {
             grid-column: 1 / -1;
             background: var(--card-bg);
@@ -342,7 +357,6 @@
             border: 2px solid var(--border-color);
             border-radius: 8px;
             min-height: 100px;
-            /* 移除 max-height 和 overflow-y: auto，让内容自适应高度 */
             font-family: 'Courier New', Consolas, monospace;
             font-size: 14px;
             line-height: 1.8;
@@ -365,12 +379,6 @@
         @keyframes highlightPulse {
             0%, 100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4); }
             50% { box-shadow: 0 0 8px 2px rgba(255, 193, 7, 0.4); }
-        }
-
-        .highlight-overlap {
-            background: linear-gradient(120deg, #FFB74D 0%, #FFA726 100%);
-            font-weight: 700;
-            color: #5D3A00;
         }
 
         .results-container {
@@ -593,7 +601,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* 回到顶部按钮 */
         .scroll-to-top {
             position: fixed;
             bottom: 30px;
@@ -698,7 +705,24 @@
     <div class="container">
         <div class="header">
             <h1>🚀 亚马逊关键词埋词检查工具</h1>
-            <p>智能检测产品文案中的关键词覆盖情况，助力提升产品搜索排名</p>
+            <p>智能检测产品文案中的关键词覆盖情况 - 全欧洲语言支持</p>
+            <div style="margin-top: 15px;">
+                <span class="language-badge">🇬🇧 English</span>
+                <span class="language-badge">🇩🇪 Deutsch</span>
+                <span class="language-badge">🇫🇷 Français</span>
+                <span class="language-badge">🇪🇸 Español</span>
+                <span class="language-badge">🇮🇹 Italiano</span>
+                <span class="language-badge">🇳🇱 Nederlands</span>
+                <span class="language-badge">🇸🇪 Svenska</span>
+                <span class="language-badge">🇵🇱 Polski</span>
+                <span class="language-badge">🇵🇹 Português</span>
+                <span class="language-badge">🇩🇰 Dansk</span>
+                <span class="language-badge">🇳🇴 Norsk</span>
+                <span class="language-badge">🇫🇮 Suomi</span>
+                <span class="language-badge">🇨🇿 Čeština</span>
+                <span class="language-badge">🇷🇴 Română</span>
+                <span class="language-badge">🇬🇷 Ελληνικά</span>
+            </div>
         </div>
 
         <div class="main-content">
@@ -707,9 +731,10 @@
                     <span class="icon">📝</span>
                     关键词列表
                 </h2>
+                <div id="languageAlert"></div>
                 <div id="duplicateAlert"></div>
                 <div class="textarea-wrapper">
-                    <textarea id="keywordsInput" placeholder="请输入关键词，每行一个或用逗号分隔&#10;&#10;示例：&#10;wireless mouse&#10;bluetooth keyboard, gaming headset&#10;USB hub"></textarea>
+                    <textarea id="keywordsInput" placeholder="请输入关键词，每行一个或用逗号分隔&#10;&#10;支持所有欧洲语言，自动识别单复数变化&#10;&#10;示例：&#10;wireless mouse&#10;bluetooth keyboard, gaming headset&#10;Maus, Tastatur (德语)&#10;souris, clavier (法语)"></textarea>
                     <span class="char-count" id="keywordCount">0 个关键词</span>
                 </div>
                 <div class="button-group">
@@ -731,7 +756,7 @@
                     产品文案
                 </h2>
                 <div class="textarea-wrapper">
-                    <textarea id="textInput" placeholder="请粘贴需要检查的产品文案内容&#10;&#10;可以包含：&#10;• 产品标题&#10;• 五点描述&#10;• 产品详情描述&#10;• Search Terms"></textarea>
+                    <textarea id="textInput" placeholder="请粘贴需要检查的产品文案内容&#10;&#10;可以包含：&#10;• 产品标题&#10;• 五点描述&#10;• 产品详情描述&#10;• Search Terms&#10;&#10;自动支持所有欧洲语言变音符号"></textarea>
                     <span class="char-count" id="textCount">0 字符</span>
                 </div>
                 <div class="button-group">
@@ -753,7 +778,6 @@
                 </button>
             </div>
 
-            <!-- 高亮结果显示区域 -->
             <div id="highlightResultCard" class="highlight-result-card">
                 <h2 class="card-title">
                     <span class="icon">✨</span>
@@ -800,7 +824,6 @@
         </div>
     </div>
 
-    <!-- 回到顶部按钮 -->
     <button id="scrollToTopBtn" class="scroll-to-top" onclick="scrollToTop()" title="回到顶部">
         ↑
     </button>
@@ -808,115 +831,351 @@
     <div id="tooltip" class="tooltip"></div>
 
     <script>
-        // 多语言单复数规则
-        const pluralRules = {
+        // 全面的欧洲语言规则库
+        const europeanLanguages = {
             en: {
-                // 英语规则
+                name: 'English',
+                irregularPlurals: {
+                    'man': ['men'], 'woman': ['women'], 'child': ['children'], 'person': ['people'],
+                    'tooth': ['teeth'], 'foot': ['feet'], 'mouse': ['mice'], 'goose': ['geese'],
+                    'ox': ['oxen'], 'sheep': ['sheep'], 'deer': ['deer'], 'fish': ['fish'],
+                    'species': ['species'], 'series': ['series'], 'knife': ['knives'], 'life': ['lives'],
+                    'leaf': ['leaves'], 'half': ['halves'], 'wife': ['wives'], 'wolf': ['wolves'],
+                    'loaf': ['loaves'], 'shelf': ['shelves'], 'calf': ['calves'], 'thief': ['thieves']
+                },
                 rules: [
-                    { singular: /mouse$/i, plural: 'mice' },
-                    { singular: /man$/i, plural: 'men' },
-                    { singular: /woman$/i, plural: 'women' },
-                    { singular: /child$/i, plural: 'children' },
-                    { singular: /foot$/i, plural: 'feet' },
-                    { singular: /tooth$/i, plural: 'teeth' },
-                    { singular: /goose$/i, plural: 'geese' },
-                    { singular: /person$/i, plural: 'people' },
-                    { singular: /(x|ch|ss|sh)$/i, plural: '$1es' },
-                    { singular: /([^aeiou])y$/i, plural: '$1ies' },
-                    { singular: /(f|fe)$/i, plural: 'ves' },
-                    { singular: /s$/i, plural: 's' },
-                    { singular: /$/i, plural: 's' }
+                    { pattern: /(x|ch|ss|sh|z)$/i, add: 'es' },
+                    { pattern: /([^aeiou])y$/i, remove: 1, add: 'ies' },
+                    { pattern: /(f|fe)$/i, remove: /fe?$/, add: 'ves' },
+                    { pattern: /(o)$/i, add: 'es' },
+                    { pattern: /$/i, add: 's' }
                 ]
             },
             de: {
-                // 德语规则
+                name: 'Deutsch',
+                irregularPlurals: {
+                    'kind': ['kinder'], 'mann': ['männer', 'manner'], 'frau': ['frauen'], 
+                    'haus': ['häuser', 'hauser'], 'buch': ['bücher', 'bucher'], 
+                    'mutter': ['mütter', 'mutter'], 'vater': ['väter', 'vater'], 
+                    'bruder': ['brüder', 'bruder'], 'apfel': ['äpfel', 'apfel'],
+                    'garten': ['gärten', 'garten'], 'kopf': ['köpfe', 'kopfe'], 
+                    'maus': ['mäuse', 'mause'], 'tochter': ['töchter', 'tochter']
+                },
                 rules: [
-                    { singular: /$/i, plural: 'e' },
-                    { singular: /$/i, plural: 'en' },
-                    { singular: /$/i, plural: 'er' },
-                    { singular: /$/i, plural: 's' }
+                    { pattern: /(e|el|er|en|chen|lein)$/i, add: '' },
+                    { pattern: /ung$/i, add: 'en' },
+                    { pattern: /heit$/i, add: 'en' },
+                    { pattern: /keit$/i, add: 'en' },
+                    { pattern: /schaft$/i, add: 'en' },
+                    { pattern: /ion$/i, add: 'en' },
+                    { pattern: /tät$/i, add: 'en' },
+                    { pattern: /um$/i, remove: 2, add: 'en' },
+                    { pattern: /us$/i, remove: 2, add: 'en' },
+                    { pattern: /$/i, add: 'e' },
+                    { pattern: /$/i, add: 'en' },
+                    { pattern: /$/i, add: 'er' },
+                    { pattern: /$/i, add: 's' }
                 ]
             },
             fr: {
-                // 法语规则
+                name: 'Français',
+                irregularPlurals: {
+                    'oeil': ['yeux'], 'monsieur': ['messieurs'], 'madame': ['mesdames'],
+                    'mademoiselle': ['mesdemoiselles'], 'ciel': ['cieux'], 
+                    'travail': ['travaux'], 'vitrail': ['vitraux']
+                },
                 rules: [
-                    { singular: /al$/i, plural: 'aux' },
-                    { singular: /ail$/i, plural: 'aux' },
-                    { singular: /eau$/i, plural: 'eaux' },
-                    { singular: /eu$/i, plural: 'eux' },
-                    { singular: /ou$/i, plural: 'ous' },
-                    { singular: /s$/i, plural: 's' },
-                    { singular: /x$/i, plural: 'x' },
-                    { singular: /z$/i, plural: 'z' },
-                    { singular: /$/i, plural: 's' }
+                    { pattern: /al$/i, remove: 2, add: 'aux' },
+                    { pattern: /ail$/i, remove: 3, add: 'aux' },
+                    { pattern: /eau$/i, add: 'x' },
+                    { pattern: /eu$/i, add: 'x' },
+                    { pattern: /au$/i, add: 'x' },
+                    { pattern: /(s|x|z)$/i, add: '' },
+                    { pattern: /$/i, add: 's' }
                 ]
             },
             es: {
-                // 西班牙语规则
+                name: 'Español',
+                irregularPlurals: {
+                    'lunes': ['lunes'], 'martes': ['martes'], 'miércoles': ['miercoles', 'miércoles'],
+                    'jueves': ['jueves'], 'viernes': ['viernes'], 'crisis': ['crisis']
+                },
                 rules: [
-                    { singular: /z$/i, plural: 'ces' },
-                    { singular: /ión$/i, plural: 'iones' },
-                    { singular: /[aeiou]$/i, plural: 's' },
-                    { singular: /[^aeiou]$/i, plural: 'es' }
+                    { pattern: /z$/i, remove: 1, add: 'ces' },
+                    { pattern: /ión$/i, remove: 2, add: 'iones' },
+                    { pattern: /és$/i, remove: 2, add: 'eses' },
+                    { pattern: /[aeiouáéíóú]$/i, add: 's' },
+                    { pattern: /[^aeiouáéíóú]$/i, add: 'es' }
                 ]
             },
             it: {
-                // 意大利语规则
+                name: 'Italiano',
+                irregularPlurals: {
+                    'uomo': ['uomini'], 'dio': ['dei'], 'bue': ['buoi'], 'uovo': ['uova']
+                },
                 rules: [
-                    { singular: /ca$/i, plural: 'che' },
-                    { singular: /ga$/i, plural: 'ghe' },
-                    { singular: /co$/i, plural: 'chi' },
-                    { singular: /go$/i, plural: 'ghi' },
-                    { singular: /o$/i, plural: 'i' },
-                    { singular: /a$/i, plural: 'e' },
-                    { singular: /e$/i, plural: 'i' }
+                    { pattern: /co$/i, add: 'chi' },
+                    { pattern: /go$/i, add: 'ghi' },
+                    { pattern: /ca$/i, remove: 1, add: 'he' },
+                    { pattern: /ga$/i, remove: 1, add: 'he' },
+                    { pattern: /cia$/i, remove: 2, add: 'e' },
+                    { pattern: /gia$/i, remove: 2, add: 'e' },
+                    { pattern: /io$/i, remove: 1, add: '' },
+                    { pattern: /o$/i, remove: 1, add: 'i' },
+                    { pattern: /a$/i, remove: 1, add: 'e' },
+                    { pattern: /e$/i, remove: 1, add: 'i' }
+                ]
+            },
+            pt: {
+                name: 'Português',
+                rules: [
+                    { pattern: /ão$/i, remove: 2, add: 'ões' },
+                    { pattern: /ão$/i, remove: 2, add: 'ães' },
+                    { pattern: /m$/i, remove: 1, add: 'ns' },
+                    { pattern: /l$/i, remove: 1, add: 'is' },
+                    { pattern: /r$/i, add: 'es' },
+                    { pattern: /z$/i, add: 'es' },
+                    { pattern: /[aeiouãõ]$/i, add: 's' },
+                    { pattern: /$/i, add: 's' }
                 ]
             },
             nl: {
-                // 荷兰语规则
+                name: 'Nederlands',
+                irregularPlurals: {
+                    'kind': ['kinderen'], 'ei': ['eieren'], 'been': ['beenderen'], 
+                    'blad': ['bladeren'], 'glas': ['glazen'], 'rad': ['raderen'], 
+                    'schip': ['schepen'], 'stad': ['steden'], 'lied': ['liederen'],
+                    'koe': ['koeien'], 'vlo': ['vlooien']
+                },
                 rules: [
-                    { singular: /$/i, plural: 'en' },
-                    { singular: /$/i, plural: 's' }
+                    { pattern: /ee$/i, add: 'ën' },
+                    { pattern: /ie$/i, add: 'ën' },
+                    { pattern: /oo$/i, add: 'ën' },
+                    { pattern: /uu$/i, add: 'ën' },
+                    { pattern: /f$/i, remove: 1, add: 'ven' },
+                    { pattern: /s$/i, remove: 1, add: 'zen' },
+                    { pattern: /$/i, add: 'en' },
+                    { pattern: /$/i, add: 's' }
                 ]
             },
             sv: {
-                // 瑞典语规则
+                name: 'Svenska',
+                irregularPlurals: {
+                    'man': ['män'], 'fot': ['fötter'], 'hand': ['händer'], 
+                    'tand': ['tänder'], 'bok': ['böcker'], 'son': ['söner'], 
+                    'dotter': ['döttrar'], 'mus': ['möss']
+                },
                 rules: [
-                    { singular: /$/i, plural: 'ar' },
-                    { singular: /$/i, plural: 'er' },
-                    { singular: /$/i, plural: 'or' },
-                    { singular: /$/i, plural: 'r' }
+                    { pattern: /e$/i, remove: 1, add: 'ar' },
+                    { pattern: /a$/i, remove: 1, add: 'or' },
+                    { pattern: /$/i, add: 'er' },
+                    { pattern: /$/i, add: 'ar' },
+                    { pattern: /$/i, add: 'or' },
+                    { pattern: /$/i, add: 'n' }
                 ]
             },
             pl: {
-                // 波兰语规则
+                name: 'Polski',
                 rules: [
-                    { singular: /a$/i, plural: 'y' },
-                    { singular: /o$/i, plural: 'a' },
-                    { singular: /e$/i, plural: 'a' },
-                    { singular: /$/i, plural: 'i' },
-                    { singular: /$/i, plural: 'owie' }
+                    { pattern: /a$/i, remove: 1, add: 'y' },
+                    { pattern: /a$/i, remove: 1, add: 'i' },
+                    { pattern: /o$/i, remove: 1, add: 'a' },
+                    { pattern: /e$/i, remove: 1, add: 'a' },
+                    { pattern: /ść$/i, add: 'i' },
+                    { pattern: /$/i, add: 'y' },
+                    { pattern: /$/i, add: 'i' },
+                    { pattern: /$/i, add: 'owie' }
+                ]
+            },
+            da: {
+                name: 'Dansk',
+                rules: [
+                    { pattern: /e$/i, add: 'r' },
+                    { pattern: /$/i, add: 'er' },
+                    { pattern: /$/i, add: 'e' },
+                    { pattern: /$/i, add: 'ne' }
+                ]
+            },
+            no: {
+                name: 'Norsk',
+                rules: [
+                    { pattern: /e$/i, add: 'r' },
+                    { pattern: /$/i, add: 'er' },
+                    { pattern: /$/i, add: 'e' },
+                    { pattern: /$/i, add: 'ene' }
+                ]
+            },
+            fi: {
+                name: 'Suomi',
+                rules: [
+                    { pattern: /i$/i, add: 't' },
+                    { pattern: /$/i, add: 't' },
+                    { pattern: /$/i, add: 'j' },
+                    { pattern: /$/i, add: 'ja' }
+                ]
+            },
+            cs: {
+                name: 'Čeština',
+                rules: [
+                    { pattern: /a$/i, remove: 1, add: 'y' },
+                    { pattern: /o$/i, remove: 1, add: 'a' },
+                    { pattern: /e$/i, remove: 1, add: 'ě' },
+                    { pattern: /$/i, add: 'y' },
+                    { pattern: /$/i, add: 'i' }
+                ]
+            },
+            ro: {
+                name: 'Română',
+                rules: [
+                    { pattern: /ă$/i, remove: 1, add: 'e' },
+                    { pattern: /a$/i, remove: 1, add: 'e' },
+                    { pattern: /e$/i, remove: 1, add: 'i' },
+                    { pattern: /u$/i, add: 'ri' },
+                    { pattern: /$/i, add: 'i' },
+                    { pattern: /$/i, add: 'uri' }
+                ]
+            },
+            el: {
+                name: 'Ελληνικά',
+                rules: [
+                    { pattern: /ος$/i, remove: 2, add: 'οι' },
+                    { pattern: /α$/i, remove: 1, add: 'ες' },
+                    { pattern: /η$/i, remove: 1, add: 'ες' },
+                    { pattern: /ο$/i, remove: 1, add: 'α' }
                 ]
             }
         };
 
+        // 变音符号映射表
+        const diacriticsMap = {
+            'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'æ': 'ae', 'ā': 'a',
+            'ç': 'c', 'ć': 'c', 'č': 'c', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ē': 'e', 'ę': 'e', 'ě': 'e',
+            'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ī': 'i', 'ñ': 'n', 'ń': 'n', 'ň': 'n',
+            'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o', 'œ': 'oe', 'ō': 'o',
+            'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u', 'ū': 'u', 'ů': 'u',
+            'ý': 'y', 'ÿ': 'y', 'ß': 'ss', 'đ': 'd', 'ð': 'd', 'þ': 'th',
+            'ą': 'a', 'ł': 'l', 'ś': 's', 'ź': 'z', 'ż': 'z',
+            'ă': 'a', 'ș': 's', 'ț': 't', 'ď': 'd', 'ř': 'r', 'š': 's', 'ť': 't', 'ž': 'z',
+            'α': 'a', 'β': 'b', 'γ': 'g', 'δ': 'd', 'ε': 'e', 'ζ': 'z', 'η': 'e', 'θ': 'th',
+            'ι': 'i', 'κ': 'k', 'λ': 'l', 'μ': 'm', 'ν': 'n', 'ξ': 'x', 'ο': 'o', 'π': 'p',
+            'ρ': 'r', 'σ': 's', 'ς': 's', 'τ': 't', 'υ': 'y', 'φ': 'f', 'χ': 'ch', 'ψ': 'ps', 'ω': 'o'
+        };
+
+        // 移除变音符号
+        function removeDiacritics(text) {
+            return text.replace(/[^\u0000-\u007E]/g, char => {
+                const lower = char.toLowerCase();
+                return diacriticsMap[lower] || char;
+            });
+        }
+
+        // 生成所有可能的单复数变体（优化版本）
+        function generateVariations(word) {
+            const variations = new Set([word.toLowerCase()]);
+            const wordLower = word.toLowerCase();
+            
+            // 同时使用原文和无变音符号版本
+            const normalized = removeDiacritics(wordLower);
+            variations.add(normalized);
+
+            // 限制每个词最多生成的变体数量，避免组合爆炸
+            const MAX_VARIATIONS = 20;
+            let count = 2; // 已经有原词和normalized版本
+
+            // 检查不规则变化（优先级最高）
+            for (const lang of Object.values(europeanLanguages)) {
+                if (count >= MAX_VARIATIONS) break;
+                
+                if (lang.irregularPlurals) {
+                    // 单数 -> 复数
+                    if (lang.irregularPlurals[wordLower]) {
+                        for (const plural of lang.irregularPlurals[wordLower]) {
+                            if (count >= MAX_VARIATIONS) break;
+                            variations.add(plural);
+                            count++;
+                            if (count < MAX_VARIATIONS) {
+                                variations.add(removeDiacritics(plural));
+                                count++;
+                            }
+                        }
+                    }
+                    
+                    // 复数 -> 单数
+                    for (const [singular, plurals] of Object.entries(lang.irregularPlurals)) {
+                        if (count >= MAX_VARIATIONS) break;
+                        if (plurals.includes(wordLower)) {
+                            variations.add(singular);
+                            count++;
+                            if (count < MAX_VARIATIONS) {
+                                variations.add(removeDiacritics(singular));
+                                count++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 应用规则生成变体（如果还没达到上限）
+            if (count < MAX_VARIATIONS) {
+                // 只使用最相关的语言规则
+                const primaryLangs = ['en', 'de', 'fr', 'es', 'it'];
+                
+                for (const langCode of primaryLangs) {
+                    if (count >= MAX_VARIATIONS) break;
+                    
+                    const lang = europeanLanguages[langCode];
+                    if (lang && lang.rules) {
+                        for (const rule of lang.rules) {
+                            if (count >= MAX_VARIATIONS) break;
+                            
+                            if (rule.pattern.test(wordLower)) {
+                                let newForm = wordLower;
+                                
+                                if (rule.remove) {
+                                    if (typeof rule.remove === 'number') {
+                                        newForm = newForm.slice(0, -rule.remove);
+                                    } else if (rule.remove instanceof RegExp) {
+                                        newForm = newForm.replace(rule.remove, '');
+                                    }
+                                }
+                                
+                                if (rule.add) {
+                                    newForm = newForm + rule.add;
+                                }
+                                
+                                if (newForm !== wordLower && newForm.length > 0 && !variations.has(newForm)) {
+                                    variations.add(newForm);
+                                    count++;
+                                    if (count < MAX_VARIATIONS) {
+                                        const normalizedNew = removeDiacritics(newForm);
+                                        if (!variations.has(normalizedNew)) {
+                                            variations.add(normalizedNew);
+                                            count++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Array.from(variations);
+        }
+
         let keywords = [];
         let matchedKeywords = [];
         let unmatchedKeywords = [];
-        let currentHighlightedText = '';
         
-        // 实时更新关键词计数
         document.getElementById('keywordsInput').addEventListener('input', function() {
             updateKeywordCount();
             checkDuplicates();
         });
         
-        // 实时更新文案字符计数
         document.getElementById('textInput').addEventListener('input', function() {
             updateTextCount();
         });
 
-        // 监听滚动事件，显示/隐藏回到顶部按钮
         window.addEventListener('scroll', function() {
             const scrollToTopBtn = document.getElementById('scrollToTopBtn');
             if (window.pageYOffset > 300) {
@@ -926,7 +1185,6 @@
             }
         });
 
-        // 回到顶部功能
         function scrollToTop() {
             window.scrollTo({
                 top: 0,
@@ -948,31 +1206,20 @@
         function parseKeywords(input) {
             if (!input.trim()) return [];
             
-            // 支持换行和逗号分隔
             const keywords = input
                 .split(/[\n,，]/)
                 .map(k => k.trim())
                 .filter(k => k.length > 0)
-                .map(k => normalizeKeyword(k)) // 使用新的规范化函数
-                .filter(k => k.length > 0); // 过滤掉全是中文或标点的关键词
+                .map(k => normalizeKeyword(k))
+                .filter(k => k.length > 0);
             
             return keywords;
         }
         
-        // 用于关键词的规范化（去除中文和标点符号）
         function normalizeKeyword(text) {
             return text
-                .replace(/[\u4e00-\u9fa5]/g, '') // 移除中文字符
-                .replace(/[^\w\s-]/g, '') // 移除标点符号（保留字母、数字、空格和连字符）
-                .toLowerCase()
-                .replace(/\s+/g, ' ')
-                .trim();
-        }
-        
-        // 用于文案的规范化（只去除中文）
-        function normalizeText(text) {
-            return text
-                .replace(/[\u4e00-\u9fa5]/g, '') // 移除中文字符
+                .replace(/[\u4e00-\u9fa5]/g, '')
+                .replace(/[^\w\s\-àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿßđðþąćęłńśźżăîșțčďěňřšťůž]/gi, '')
                 .toLowerCase()
                 .replace(/\s+/g, ' ')
                 .trim();
@@ -984,13 +1231,14 @@
             const duplicates = [];
             const seen = {};
             
-            keywords.forEach((k, i) => {
-                if (seen[k]) {
-                    if (!duplicates.includes(k)) {
+            keywords.forEach((k) => {
+                const normalized = removeDiacritics(k);
+                if (seen[normalized]) {
+                    if (!duplicates.some(d => removeDiacritics(d) === normalized)) {
                         duplicates.push(k);
                     }
                 } else {
-                    seen[k] = true;
+                    seen[normalized] = true;
                 }
             });
             
@@ -1017,9 +1265,10 @@
             const unique = [];
             
             keywords.forEach(k => {
-                if (!seen[k]) {
+                const normalized = removeDiacritics(k);
+                if (!seen[normalized]) {
                     unique.push(k);
-                    seen[k] = true;
+                    seen[normalized] = true;
                 }
             });
             
@@ -1029,45 +1278,13 @@
             showToast('已去除重复关键词');
         }
         
-        function getVariations(word) {
-            const variations = [word];
-            
-            // 尝试所有语言的规则
-            Object.values(pluralRules).forEach(lang => {
-                lang.rules.forEach(rule => {
-                    // 生成复数形式
-                    if (rule.singular.test(word)) {
-                        const plural = word.replace(rule.singular, rule.plural);
-                        if (plural !== word && !variations.includes(plural)) {
-                            variations.push(plural);
-                        }
-                    }
-                    
-                    // 反向生成单数形式
-                    if (rule.plural && typeof rule.plural === 'string') {
-                        const pluralRegex = new RegExp(rule.plural.replace(/\$/g, '\\$') + '$', 'i');
-                        if (pluralRegex.test(word)) {
-                            const singularPattern = rule.singular.source.replace(/\$.*/, '');
-                            if (singularPattern) {
-                                const singular = word.replace(pluralRegex, singularPattern);
-                                if (singular !== word && !variations.includes(singular)) {
-                                    variations.push(singular);
-                                }
-                            }
-                        }
-                    }
-                });
-            });
-            
-            return variations;
-        }
-        
         function checkKeywordWithVariations(keyword, text, getMatches = false) {
             const words = keyword.split(/\s+/);
             const matches = [];
+            let found = false;
             
-            // 为每个词生成变体
-            const wordVariations = words.map(word => getVariations(word));
+            // 为每个词生成所有变体
+            const wordVariations = words.map(word => generateVariations(word));
             
             // 生成所有可能的组合
             function generateCombinations(arrays) {
@@ -1086,20 +1303,37 @@
                 const pattern = combination.join('\\s+');
                 const regex = new RegExp(`\\b${pattern}\\b`, 'gi');
                 let match;
-                while ((match = regex.exec(text)) !== null) {
-                    if (getMatches) {
-                        matches.push({
-                            start: match.index,
-                            end: match.index + match[0].length,
-                            text: match[0]
-                        });
-                    } else {
-                        return true;
+                
+                // 同时检查原文和无变音符号版本
+                const texts = [text, removeDiacritics(text)];
+                
+                for (let i = 0; i < texts.length; i++) {
+                    const searchText = texts[i];
+                    regex.lastIndex = 0;
+                    while ((match = regex.exec(searchText)) !== null) {
+                        if (getMatches) {
+                            // 在原文中查找对应位置
+                            const actualText = text.substring(match.index, match.index + match[0].length);
+                            const isDuplicate = matches.some(m => 
+                                Math.abs(m.start - match.index) < 5
+                            );
+                            
+                            if (!isDuplicate) {
+                                matches.push({
+                                    start: match.index,
+                                    end: match.index + match[0].length,
+                                    text: actualText
+                                });
+                            }
+                            found = true;
+                        } else {
+                            return true;
+                        }
                     }
                 }
             }
             
-            return getMatches ? matches : false;
+            return getMatches ? matches : found;
         }
 
         function escapeHtml(text) {
@@ -1117,33 +1351,31 @@
                 return;
             }
             
-            // 显示加载状态
             const checkBtn = document.querySelector('.btn-check');
             const originalText = checkBtn.innerHTML;
             checkBtn.innerHTML = '<span class="loading"></span> 检查中...';
             checkBtn.disabled = true;
             
             setTimeout(() => {
-                // 解析和标准化
                 keywords = parseKeywords(keywordsInput);
-                const normalizedTextForSearch = normalizeText(textInput);
                 
                 // 去重
                 const seen = {};
                 const uniqueKeywords = [];
                 keywords.forEach(k => {
-                    if (!seen[k]) {
+                    const normalized = removeDiacritics(k);
+                    if (!seen[normalized]) {
                         uniqueKeywords.push(k);
-                        seen[k] = true;
+                        seen[normalized] = true;
                     }
                 });
                 keywords = uniqueKeywords;
                 
-                // 检查每个关键词
                 matchedKeywords = [];
                 unmatchedKeywords = [];
                 const allMatches = [];
                 
+                // 检查每个关键词
                 keywords.forEach(keyword => {
                     const matches = checkKeywordWithVariations(keyword, textInput, true);
                     if (matches && matches.length > 0) {
@@ -1164,7 +1396,6 @@
                     } else {
                         const last = mergedHighlights[mergedHighlights.length - 1];
                         if (h.start <= last.end) {
-                            // 合并重叠区域
                             last.end = Math.max(last.end, h.end);
                         } else {
                             mergedHighlights.push({...h});
@@ -1177,14 +1408,11 @@
                 let lastIndex = 0;
                 
                 mergedHighlights.forEach(h => {
-                    // 添加高亮前的普通文本
                     highlightedText += escapeHtml(textInput.substring(lastIndex, h.start));
-                    // 添加高亮文本
                     highlightedText += `<span class="highlight">${escapeHtml(textInput.substring(h.start, h.end))}</span>`;
                     lastIndex = h.end;
                 });
                 
-                // 添加剩余的文本
                 highlightedText += escapeHtml(textInput.substring(lastIndex));
                 
                 // 显示高亮结果
@@ -1193,14 +1421,23 @@
                 highlightDisplay.innerHTML = highlightedText;
                 highlightCard.classList.add('show');
                 
-                // 显示结果
+                // 显示语言支持提示
+                const languageAlert = document.getElementById('languageAlert');
+                languageAlert.innerHTML = `
+                    <div class="alert alert-info">
+                        <span class="alert-icon">🌍</span>
+                        <div>
+                            <strong>多语言智能匹配已启用</strong><br>
+                            已自动识别并匹配所有单复数、性别变化和变音符号
+                        </div>
+                    </div>
+                `;
+                
                 showResults();
                 
-                // 恢复按钮状态
                 checkBtn.innerHTML = originalText;
                 checkBtn.disabled = false;
                 
-                // 滚动到高亮结果
                 highlightCard.scrollIntoView({ 
                     behavior: 'smooth', 
                     block: 'start' 
@@ -1214,12 +1451,10 @@
             const unmatched = unmatchedKeywords.length;
             const matchRate = total > 0 ? (matched / total * 100).toFixed(1) : 0;
             
-            // 更新统计数据
             document.getElementById('totalCount').textContent = total;
             document.getElementById('matchedCount').textContent = matched;
             document.getElementById('unmatchedCount').textContent = unmatched;
             
-            // 更新匹配率显示
             const rateDisplay = document.getElementById('matchRateDisplay');
             rateDisplay.textContent = `${matchRate}%`;
             rateDisplay.className = 'match-rate-display';
@@ -1232,11 +1467,9 @@
                 rateDisplay.classList.add('match-rate-low');
             }
             
-            // 显示结果容器
             document.getElementById('resultsContainer').style.display = 'block';
         }
         
-        // 显示所有关键词
         function showAllKeywords() {
             showKeywords('all');
         }
@@ -1246,7 +1479,7 @@
             
             switch(type) {
                 case 'all':
-                    keywordsList = keywords; // 使用全局的 keywords 变量
+                    keywordsList = keywords;
                     title = '所有关键词';
                     break;
                 case 'matched':
@@ -1376,7 +1609,7 @@
                     btn.classList.remove('copied');
                     btn.innerHTML = originalText;
                 }, 2000);
-            }).catch((err) => {
+            }).catch(() => {
                 btn.classList.add('copy-failed');
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '<span>✗</span> 复制失败！';
@@ -1391,6 +1624,7 @@
         function resetKeywords() {
             document.getElementById('keywordsInput').value = '';
             document.getElementById('duplicateAlert').innerHTML = '';
+            document.getElementById('languageAlert').innerHTML = '';
             updateKeywordCount();
             showToast('关键词已重置');
         }
@@ -1398,7 +1632,6 @@
         function resetText() {
             document.getElementById('textInput').value = '';
             
-            // 隐藏高亮显示区域
             const highlightCard = document.getElementById('highlightResultCard');
             highlightCard.classList.remove('show');
             document.getElementById('highlightDisplay').innerHTML = '';
@@ -1430,12 +1663,10 @@
             }, 2000);
         }
         
-        // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
             updateKeywordCount();
             updateTextCount();
             
-            // 添加动画效果
             const cards = document.querySelectorAll('.card');
             cards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.1}s`;
