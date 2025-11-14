@@ -831,492 +831,211 @@
     <div id="tooltip" class="tooltip"></div>
 
     <script>
-        // 全面的欧洲语言规则库
-        const europeanLanguages = {
-            en: {
-                name: 'English',
-                irregularPlurals: {
-                    'man': ['men'], 'woman': ['women'], 'child': ['children'], 'person': ['people'],
-                    'tooth': ['teeth'], 'foot': ['feet'], 'mouse': ['mice'], 'goose': ['geese'],
-                    'ox': ['oxen'], 'sheep': ['sheep'], 'deer': ['deer'], 'fish': ['fish'],
-                    'species': ['species'], 'series': ['series'], 'knife': ['knives'], 'life': ['lives'],
-                    'leaf': ['leaves'], 'half': ['halves'], 'wife': ['wives'], 'wolf': ['wolves'],
-                    'loaf': ['loaves'], 'shelf': ['shelves'], 'calf': ['calves'], 'thief': ['thieves']
+        // ============================================
+        // MODULE 1: 语言规则库 (Language Rules Database)
+        // ============================================
+        const LanguageRules = {
+            // 变音符号映射表 (Diacritics Map)
+            diacriticsMap: {
+                'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'æ': 'ae', 'ā': 'a',
+                'ç': 'c', 'ć': 'c', 'č': 'c', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ē': 'e', 'ę': 'e', 'ě': 'e',
+                'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ī': 'i', 'ñ': 'n', 'ń': 'n', 'ň': 'n',
+                'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o', 'œ': 'oe', 'ō': 'o',
+                'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u', 'ū': 'u', 'ů': 'u',
+                'ý': 'y', 'ÿ': 'y', 'ß': 'ss', 'đ': 'd', 'ð': 'd', 'þ': 'th',
+                'ą': 'a', 'ł': 'l', 'ś': 's', 'ź': 'z', 'ż': 'z',
+                'ă': 'a', 'ș': 's', 'ț': 't', 'ď': 'd', 'ř': 'r', 'š': 's', 'ť': 't', 'ž': 'z',
+                'α': 'a', 'β': 'b', 'γ': 'g', 'δ': 'd', 'ε': 'e', 'ζ': 'z', 'η': 'e', 'θ': 'th',
+                'ι': 'i', 'κ': 'k', 'λ': 'l', 'μ': 'm', 'ν': 'n', 'ξ': 'x', 'ο': 'o', 'π': 'p',
+                'ρ': 'r', 'σ': 's', 'ς': 's', 'τ': 't', 'υ': 'y', 'φ': 'f', 'χ': 'ch', 'ψ': 'ps', 'ω': 'o'
+            },
+
+            // 欧洲语言配置 (European Languages Configuration)
+            languages: {
+                en: {
+                    name: 'English',
+                    irregularPlurals: {
+                        'man': ['men'], 'woman': ['women'], 'child': ['children'], 'person': ['people'],
+                        'tooth': ['teeth'], 'foot': ['feet'], 'mouse': ['mice'], 'goose': ['geese'],
+                        'ox': ['oxen'], 'sheep': ['sheep'], 'deer': ['deer'], 'fish': ['fish']
+                    },
+                    rules: [
+                        { pattern: /(x|ch|ss|sh|z)$/i, add: 'es' },
+                        { pattern: /([^aeiou])y$/i, remove: 1, add: 'ies' },
+                        { pattern: /(f|fe)$/i, remove: /fe?$/, add: 'ves' },
+                        { pattern: /$/i, add: 's' }
+                    ]
                 },
-                rules: [
-                    { pattern: /(x|ch|ss|sh|z)$/i, add: 'es' },
-                    { pattern: /([^aeiou])y$/i, remove: 1, add: 'ies' },
-                    { pattern: /(f|fe)$/i, remove: /fe?$/, add: 'ves' },
-                    { pattern: /(o)$/i, add: 'es' },
-                    { pattern: /$/i, add: 's' }
-                ]
-            },
-            de: {
-                name: 'Deutsch',
-                irregularPlurals: {
-                    'kind': ['kinder'], 'mann': ['männer', 'manner'], 'frau': ['frauen'], 
-                    'haus': ['häuser', 'hauser'], 'buch': ['bücher', 'bucher'], 
-                    'mutter': ['mütter', 'mutter'], 'vater': ['väter', 'vater'], 
-                    'bruder': ['brüder', 'bruder'], 'apfel': ['äpfel', 'apfel'],
-                    'garten': ['gärten', 'garten'], 'kopf': ['köpfe', 'kopfe'], 
-                    'maus': ['mäuse', 'mause'], 'tochter': ['töchter', 'tochter']
+                de: {
+                    name: 'Deutsch',
+                    irregularPlurals: {
+                        'kind': ['kinder'], 'mann': ['männer', 'manner'], 'haus': ['häuser', 'hauser'],
+                        'buch': ['bücher', 'bucher'], 'mutter': ['mütter', 'mutter']
+                    },
+                    rules: [
+                        { pattern: /(e|el|er|en)$/i, add: '' },
+                        { pattern: /$/i, add: 'e' },
+                        { pattern: /$/i, add: 'en' }
+                    ]
                 },
-                rules: [
-                    { pattern: /(e|el|er|en|chen|lein)$/i, add: '' },
-                    { pattern: /ung$/i, add: 'en' },
-                    { pattern: /heit$/i, add: 'en' },
-                    { pattern: /keit$/i, add: 'en' },
-                    { pattern: /schaft$/i, add: 'en' },
-                    { pattern: /ion$/i, add: 'en' },
-                    { pattern: /tät$/i, add: 'en' },
-                    { pattern: /um$/i, remove: 2, add: 'en' },
-                    { pattern: /us$/i, remove: 2, add: 'en' },
-                    { pattern: /$/i, add: 'e' },
-                    { pattern: /$/i, add: 'en' },
-                    { pattern: /$/i, add: 'er' },
-                    { pattern: /$/i, add: 's' }
-                ]
-            },
-            fr: {
-                name: 'Français',
-                irregularPlurals: {
-                    'oeil': ['yeux'], 'monsieur': ['messieurs'], 'madame': ['mesdames'],
-                    'mademoiselle': ['mesdemoiselles'], 'ciel': ['cieux'], 
-                    'travail': ['travaux'], 'vitrail': ['vitraux']
+                fr: {
+                    name: 'Français',
+                    irregularPlurals: {
+                        'oeil': ['yeux'], 'travail': ['travaux']
+                    },
+                    rules: [
+                        { pattern: /al$/i, remove: 2, add: 'aux' },
+                        { pattern: /eau$/i, add: 'x' },
+                        { pattern: /$/i, add: 's' }
+                    ]
                 },
-                rules: [
-                    { pattern: /al$/i, remove: 2, add: 'aux' },
-                    { pattern: /ail$/i, remove: 3, add: 'aux' },
-                    { pattern: /eau$/i, add: 'x' },
-                    { pattern: /eu$/i, add: 'x' },
-                    { pattern: /au$/i, add: 'x' },
-                    { pattern: /(s|x|z)$/i, add: '' },
-                    { pattern: /$/i, add: 's' }
-                ]
-            },
-            es: {
-                name: 'Español',
-                irregularPlurals: {
-                    'lunes': ['lunes'], 'martes': ['martes'], 'miércoles': ['miercoles', 'miércoles'],
-                    'jueves': ['jueves'], 'viernes': ['viernes'], 'crisis': ['crisis']
+                es: {
+                    name: 'Español',
+                    rules: [
+                        { pattern: /z$/i, remove: 1, add: 'ces' },
+                        { pattern: /[aeiouáéíóú]$/i, add: 's' },
+                        { pattern: /$/i, add: 'es' }
+                    ]
                 },
-                rules: [
-                    { pattern: /z$/i, remove: 1, add: 'ces' },
-                    { pattern: /ión$/i, remove: 2, add: 'iones' },
-                    { pattern: /és$/i, remove: 2, add: 'eses' },
-                    { pattern: /[aeiouáéíóú]$/i, add: 's' },
-                    { pattern: /[^aeiouáéíóú]$/i, add: 'es' }
-                ]
+                it: {
+                    name: 'Italiano',
+                    rules: [
+                        { pattern: /o$/i, remove: 1, add: 'i' },
+                        { pattern: /a$/i, remove: 1, add: 'e' }
+                    ]
+                }
             },
-            it: {
-                name: 'Italiano',
-                irregularPlurals: {
-                    'uomo': ['uomini'], 'dio': ['dei'], 'bue': ['buoi'], 'uovo': ['uova']
-                },
-                rules: [
-                    { pattern: /co$/i, add: 'chi' },
-                    { pattern: /go$/i, add: 'ghi' },
-                    { pattern: /ca$/i, remove: 1, add: 'he' },
-                    { pattern: /ga$/i, remove: 1, add: 'he' },
-                    { pattern: /cia$/i, remove: 2, add: 'e' },
-                    { pattern: /gia$/i, remove: 2, add: 'e' },
-                    { pattern: /io$/i, remove: 1, add: '' },
-                    { pattern: /o$/i, remove: 1, add: 'i' },
-                    { pattern: /a$/i, remove: 1, add: 'e' },
-                    { pattern: /e$/i, remove: 1, add: 'i' }
-                ]
-            },
-            pt: {
-                name: 'Português',
-                rules: [
-                    { pattern: /ão$/i, remove: 2, add: 'ões' },
-                    { pattern: /ão$/i, remove: 2, add: 'ães' },
-                    { pattern: /m$/i, remove: 1, add: 'ns' },
-                    { pattern: /l$/i, remove: 1, add: 'is' },
-                    { pattern: /r$/i, add: 'es' },
-                    { pattern: /z$/i, add: 'es' },
-                    { pattern: /[aeiouãõ]$/i, add: 's' },
-                    { pattern: /$/i, add: 's' }
-                ]
-            },
-            nl: {
-                name: 'Nederlands',
-                irregularPlurals: {
-                    'kind': ['kinderen'], 'ei': ['eieren'], 'been': ['beenderen'], 
-                    'blad': ['bladeren'], 'glas': ['glazen'], 'rad': ['raderen'], 
-                    'schip': ['schepen'], 'stad': ['steden'], 'lied': ['liederen'],
-                    'koe': ['koeien'], 'vlo': ['vlooien']
-                },
-                rules: [
-                    { pattern: /ee$/i, add: 'ën' },
-                    { pattern: /ie$/i, add: 'ën' },
-                    { pattern: /oo$/i, add: 'ën' },
-                    { pattern: /uu$/i, add: 'ën' },
-                    { pattern: /f$/i, remove: 1, add: 'ven' },
-                    { pattern: /s$/i, remove: 1, add: 'zen' },
-                    { pattern: /$/i, add: 'en' },
-                    { pattern: /$/i, add: 's' }
-                ]
-            },
-            sv: {
-                name: 'Svenska',
-                irregularPlurals: {
-                    'man': ['män'], 'fot': ['fötter'], 'hand': ['händer'], 
-                    'tand': ['tänder'], 'bok': ['böcker'], 'son': ['söner'], 
-                    'dotter': ['döttrar'], 'mus': ['möss']
-                },
-                rules: [
-                    { pattern: /e$/i, remove: 1, add: 'ar' },
-                    { pattern: /a$/i, remove: 1, add: 'or' },
-                    { pattern: /$/i, add: 'er' },
-                    { pattern: /$/i, add: 'ar' },
-                    { pattern: /$/i, add: 'or' },
-                    { pattern: /$/i, add: 'n' }
-                ]
-            },
-            pl: {
-                name: 'Polski',
-                rules: [
-                    { pattern: /a$/i, remove: 1, add: 'y' },
-                    { pattern: /a$/i, remove: 1, add: 'i' },
-                    { pattern: /o$/i, remove: 1, add: 'a' },
-                    { pattern: /e$/i, remove: 1, add: 'a' },
-                    { pattern: /ść$/i, add: 'i' },
-                    { pattern: /$/i, add: 'y' },
-                    { pattern: /$/i, add: 'i' },
-                    { pattern: /$/i, add: 'owie' }
-                ]
-            },
-            da: {
-                name: 'Dansk',
-                rules: [
-                    { pattern: /e$/i, add: 'r' },
-                    { pattern: /$/i, add: 'er' },
-                    { pattern: /$/i, add: 'e' },
-                    { pattern: /$/i, add: 'ne' }
-                ]
-            },
-            no: {
-                name: 'Norsk',
-                rules: [
-                    { pattern: /e$/i, add: 'r' },
-                    { pattern: /$/i, add: 'er' },
-                    { pattern: /$/i, add: 'e' },
-                    { pattern: /$/i, add: 'ene' }
-                ]
-            },
-            fi: {
-                name: 'Suomi',
-                rules: [
-                    { pattern: /i$/i, add: 't' },
-                    { pattern: /$/i, add: 't' },
-                    { pattern: /$/i, add: 'j' },
-                    { pattern: /$/i, add: 'ja' }
-                ]
-            },
-            cs: {
-                name: 'Čeština',
-                rules: [
-                    { pattern: /a$/i, remove: 1, add: 'y' },
-                    { pattern: /o$/i, remove: 1, add: 'a' },
-                    { pattern: /e$/i, remove: 1, add: 'ě' },
-                    { pattern: /$/i, add: 'y' },
-                    { pattern: /$/i, add: 'i' }
-                ]
-            },
-            ro: {
-                name: 'Română',
-                rules: [
-                    { pattern: /ă$/i, remove: 1, add: 'e' },
-                    { pattern: /a$/i, remove: 1, add: 'e' },
-                    { pattern: /e$/i, remove: 1, add: 'i' },
-                    { pattern: /u$/i, add: 'ri' },
-                    { pattern: /$/i, add: 'i' },
-                    { pattern: /$/i, add: 'uri' }
-                ]
-            },
-            el: {
-                name: 'Ελληνικά',
-                rules: [
-                    { pattern: /ος$/i, remove: 2, add: 'οι' },
-                    { pattern: /α$/i, remove: 1, add: 'ες' },
-                    { pattern: /η$/i, remove: 1, add: 'ες' },
-                    { pattern: /ο$/i, remove: 1, add: 'α' }
-                ]
+
+            // 移除变音符号 (Remove Diacritics)
+            removeDiacritics(text) {
+                return text.replace(/[^\u0000-\u007E]/g, char => {
+                    const lower = char.toLowerCase();
+                    return this.diacriticsMap[lower] || char;
+                });
             }
         };
 
-        // 变音符号映射表
-        const diacriticsMap = {
-            'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a', 'æ': 'ae', 'ā': 'a',
-            'ç': 'c', 'ć': 'c', 'č': 'c', 'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e', 'ē': 'e', 'ę': 'e', 'ě': 'e',
-            'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i', 'ī': 'i', 'ñ': 'n', 'ń': 'n', 'ň': 'n',
-            'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o', 'ø': 'o', 'œ': 'oe', 'ō': 'o',
-            'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u', 'ū': 'u', 'ů': 'u',
-            'ý': 'y', 'ÿ': 'y', 'ß': 'ss', 'đ': 'd', 'ð': 'd', 'þ': 'th',
-            'ą': 'a', 'ł': 'l', 'ś': 's', 'ź': 'z', 'ż': 'z',
-            'ă': 'a', 'ș': 's', 'ț': 't', 'ď': 'd', 'ř': 'r', 'š': 's', 'ť': 't', 'ž': 'z',
-            'α': 'a', 'β': 'b', 'γ': 'g', 'δ': 'd', 'ε': 'e', 'ζ': 'z', 'η': 'e', 'θ': 'th',
-            'ι': 'i', 'κ': 'k', 'λ': 'l', 'μ': 'm', 'ν': 'n', 'ξ': 'x', 'ο': 'o', 'π': 'p',
-            'ρ': 'r', 'σ': 's', 'ς': 's', 'τ': 't', 'υ': 'y', 'φ': 'f', 'χ': 'ch', 'ψ': 'ps', 'ω': 'o'
-        };
+        // ============================================
+        // MODULE 2: 关键词处理引擎 (Keyword Processing Engine)
+        // ============================================
+        const KeywordEngine = {
+            MAX_VARIATIONS: 20,
+            variationCache: new Map(), // 缓存优化
 
-        // 移除变音符号
-        function removeDiacritics(text) {
-            return text.replace(/[^\u0000-\u007E]/g, char => {
-                const lower = char.toLowerCase();
-                return diacriticsMap[lower] || char;
-            });
-        }
+            // 生成词汇变体 (Generate Word Variations)
+            generateVariations(word) {
+                // 检查缓存
+                const cached = this.variationCache.get(word);
+                if (cached) return cached;
 
-        // 生成所有可能的单复数变体（优化版本）
-        function generateVariations(word) {
-            const variations = new Set([word.toLowerCase()]);
-            const wordLower = word.toLowerCase();
-            
-            // 同时使用原文和无变音符号版本
-            const normalized = removeDiacritics(wordLower);
-            variations.add(normalized);
+                const variations = new Set([word.toLowerCase()]);
+                const wordLower = word.toLowerCase();
+                const normalized = LanguageRules.removeDiacritics(wordLower);
+                variations.add(normalized);
 
-            // 限制每个词最多生成的变体数量，避免组合爆炸
-            const MAX_VARIATIONS = 20;
-            let count = 2; // 已经有原词和normalized版本
+                let count = 2;
 
-            // 检查不规则变化（优先级最高）
-            for (const lang of Object.values(europeanLanguages)) {
-                if (count >= MAX_VARIATIONS) break;
-                
-                if (lang.irregularPlurals) {
-                    // 单数 -> 复数
-                    if (lang.irregularPlurals[wordLower]) {
-                        for (const plural of lang.irregularPlurals[wordLower]) {
-                            if (count >= MAX_VARIATIONS) break;
-                            variations.add(plural);
-                            count++;
-                            if (count < MAX_VARIATIONS) {
-                                variations.add(removeDiacritics(plural));
-                                count++;
+                // 优先处理不规则变化
+                for (const lang of Object.values(LanguageRules.languages)) {
+                    if (count >= this.MAX_VARIATIONS) break;
+                    
+                    if (lang.irregularPlurals) {
+                        // 单数 -> 复数
+                        if (lang.irregularPlurals[wordLower]) {
+                            for (const plural of lang.irregularPlurals[wordLower]) {
+                                if (count >= this.MAX_VARIATIONS) break;
+                                variations.add(plural);
+                                variations.add(LanguageRules.removeDiacritics(plural));
+                                count += 2;
                             }
                         }
-                    }
-                    
-                    // 复数 -> 单数
-                    for (const [singular, plurals] of Object.entries(lang.irregularPlurals)) {
-                        if (count >= MAX_VARIATIONS) break;
-                        if (plurals.includes(wordLower)) {
-                            variations.add(singular);
-                            count++;
-                            if (count < MAX_VARIATIONS) {
-                                variations.add(removeDiacritics(singular));
+                        
+                        // 复数 -> 单数
+                        for (const [singular, plurals] of Object.entries(lang.irregularPlurals)) {
+                            if (count >= this.MAX_VARIATIONS) break;
+                            if (plurals.includes(wordLower)) {
+                                variations.add(singular);
                                 count++;
                             }
                         }
                     }
                 }
-            }
 
-            // 应用规则生成变体（如果还没达到上限）
-            if (count < MAX_VARIATIONS) {
-                // 只使用最相关的语言规则
-                const primaryLangs = ['en', 'de', 'fr', 'es', 'it'];
-                
-                for (const langCode of primaryLangs) {
-                    if (count >= MAX_VARIATIONS) break;
+                // 应用规则变体
+                if (count < this.MAX_VARIATIONS) {
+                    const primaryLangs = ['en', 'de', 'fr', 'es', 'it'];
                     
-                    const lang = europeanLanguages[langCode];
-                    if (lang && lang.rules) {
-                        for (const rule of lang.rules) {
-                            if (count >= MAX_VARIATIONS) break;
+                    for (const langCode of primaryLangs) {
+                        if (count >= this.MAX_VARIATIONS) break;
+                        const lang = LanguageRules.languages[langCode];
+                        
+                        if (lang?.rules) {
+                            for (const rule of lang.rules) {
+                                if (count >= this.MAX_VARIATIONS) break;
+                                if (rule.pattern.test(wordLower)) {
+                                    let newForm = this.applyRule(wordLower, rule);
+                                    if (newForm && newForm !== wordLower && !variations.has(newForm)) {
+                                        variations.add(newForm);
+                                        count++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                const result = Array.from(variations);
+                this.variationCache.set(word, result); // 缓存结果
+                return result;
+            },
+
+            // 应用语言规则 (Apply Language Rule)
+            applyRule(word, rule) {
+                let newForm = word;
+                
+                if (rule.remove) {
+                    if (typeof rule.remove === 'number') {
+                        newForm = newForm.slice(0, -rule.remove);
+                    } else if (rule.remove instanceof RegExp) {
+                        newForm = newForm.replace(rule.remove, '');
+                    }
+                }
+                
+                if (rule.add) {
+                    newForm = newForm + rule.add;
+                }
+                
+                return newForm.length > 0 ? newForm : null;
+            },
+
+            // 检查关键词匹配 (Check Keyword Match)
+            checkMatch(keyword, text, getMatches = false) {
+                const words = keyword.split(/\s+/);
+                const matches = [];
+                
+                // 为每个词生成变体
+                const wordVariations = words.map(word => this.generateVariations(word));
+                
+                // 生成组合
+                const combinations = this.generateCombinations(wordVariations);
+                
+                // 检查所有组合
+                for (const combination of combinations) {
+                    const pattern = combination.join('\\s+');
+                    const regex = new RegExp(`\\b${pattern}\\b`, 'gi');
+                    
+                    // 同时检查原文和标准化版本
+                    const texts = [text, LanguageRules.removeDiacritics(text)];
+                    
+                    for (const searchText of texts) {
+                        regex.lastIndex = 0;
+                        let match;
+                        
+                        while ((match = regex.exec(searchText)) !== null) {
+                            if (!getMatches) return true;
                             
-                            if (rule.pattern.test(wordLower)) {
-                                let newForm = wordLower;
-                                
-                                if (rule.remove) {
-                                    if (typeof rule.remove === 'number') {
-                                        newForm = newForm.slice(0, -rule.remove);
-                                    } else if (rule.remove instanceof RegExp) {
-                                        newForm = newForm.replace(rule.remove, '');
-                                    }
-                                }
-                                
-                                if (rule.add) {
-                                    newForm = newForm + rule.add;
-                                }
-                                
-                                if (newForm !== wordLower && newForm.length > 0 && !variations.has(newForm)) {
-                                    variations.add(newForm);
-                                    count++;
-                                    if (count < MAX_VARIATIONS) {
-                                        const normalizedNew = removeDiacritics(newForm);
-                                        if (!variations.has(normalizedNew)) {
-                                            variations.add(normalizedNew);
-                                            count++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return Array.from(variations);
-        }
-
-        let keywords = [];
-        let matchedKeywords = [];
-        let unmatchedKeywords = [];
-        
-        document.getElementById('keywordsInput').addEventListener('input', function() {
-            updateKeywordCount();
-            checkDuplicates();
-        });
-        
-        document.getElementById('textInput').addEventListener('input', function() {
-            updateTextCount();
-        });
-
-        window.addEventListener('scroll', function() {
-            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-            if (window.pageYOffset > 300) {
-                scrollToTopBtn.classList.add('show');
-            } else {
-                scrollToTopBtn.classList.remove('show');
-            }
-        });
-
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-        
-        function updateKeywordCount() {
-            const input = document.getElementById('keywordsInput').value;
-            const keywords = parseKeywords(input);
-            document.getElementById('keywordCount').textContent = `${keywords.length} 个关键词`;
-        }
-        
-        function updateTextCount() {
-            const text = document.getElementById('textInput').value;
-            document.getElementById('textCount').textContent = `${text.length} 字符`;
-        }
-        
-        function parseKeywords(input) {
-            if (!input.trim()) return [];
-            
-            const keywords = input
-                .split(/[\n,，]/)
-                .map(k => k.trim())
-                .filter(k => k.length > 0)
-                .map(k => normalizeKeyword(k))
-                .filter(k => k.length > 0);
-            
-            return keywords;
-        }
-        
-        function normalizeKeyword(text) {
-            return text
-                .replace(/[\u4e00-\u9fa5]/g, '')
-                .replace(/[^\w\s\-àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿßđðþąćęłńśźżăîșțčďěňřšťůž]/gi, '')
-                .toLowerCase()
-                .replace(/\s+/g, ' ')
-                .trim();
-        }
-        
-        function checkDuplicates() {
-            const input = document.getElementById('keywordsInput').value;
-            const keywords = parseKeywords(input);
-            const duplicates = [];
-            const seen = {};
-            
-            keywords.forEach((k) => {
-                const normalized = removeDiacritics(k);
-                if (seen[normalized]) {
-                    if (!duplicates.some(d => removeDiacritics(d) === normalized)) {
-                        duplicates.push(k);
-                    }
-                } else {
-                    seen[normalized] = true;
-                }
-            });
-            
-            const alertDiv = document.getElementById('duplicateAlert');
-            if (duplicates.length > 0) {
-                alertDiv.innerHTML = `
-                    <div class="alert alert-warning">
-                        <span class="alert-icon">⚠️</span>
-                        <div>
-                            <strong>发现重复关键词：</strong><br>
-                            ${duplicates.join(', ')}
-                        </div>
-                    </div>
-                `;
-            } else {
-                alertDiv.innerHTML = '';
-            }
-        }
-        
-        function removeDuplicates() {
-            const input = document.getElementById('keywordsInput').value;
-            const keywords = parseKeywords(input);
-            const seen = {};
-            const unique = [];
-            
-            keywords.forEach(k => {
-                const normalized = removeDiacritics(k);
-                if (!seen[normalized]) {
-                    unique.push(k);
-                    seen[normalized] = true;
-                }
-            });
-            
-            document.getElementById('keywordsInput').value = unique.join('\n');
-            updateKeywordCount();
-            checkDuplicates();
-            showToast('已去除重复关键词');
-        }
-        
-        function checkKeywordWithVariations(keyword, text, getMatches = false) {
-            const words = keyword.split(/\s+/);
-            const matches = [];
-            let found = false;
-            
-            // 为每个词生成所有变体
-            const wordVariations = words.map(word => generateVariations(word));
-            
-            // 生成所有可能的组合
-            function generateCombinations(arrays) {
-                if (arrays.length === 0) return [[]];
-                const [first, ...rest] = arrays;
-                const subCombinations = generateCombinations(rest);
-                return first.flatMap(item => 
-                    subCombinations.map(combination => [item, ...combination])
-                );
-            }
-            
-            const combinations = generateCombinations(wordVariations);
-            
-            // 检查所有组合
-            for (const combination of combinations) {
-                const pattern = combination.join('\\s+');
-                const regex = new RegExp(`\\b${pattern}\\b`, 'gi');
-                let match;
-                
-                // 同时检查原文和无变音符号版本
-                const texts = [text, removeDiacritics(text)];
-                
-                for (let i = 0; i < texts.length; i++) {
-                    const searchText = texts[i];
-                    regex.lastIndex = 0;
-                    while ((match = regex.exec(searchText)) !== null) {
-                        if (getMatches) {
-                            // 在原文中查找对应位置
                             const actualText = text.substring(match.index, match.index + match[0].length);
-                            const isDuplicate = matches.some(m => 
-                                Math.abs(m.start - match.index) < 5
-                            );
+                            const isDuplicate = matches.some(m => Math.abs(m.start - match.index) < 5);
                             
                             if (!isDuplicate) {
                                 matches.push({
@@ -1325,26 +1044,239 @@
                                     text: actualText
                                 });
                             }
-                            found = true;
-                        } else {
-                            return true;
                         }
                     }
                 }
-            }
-            
-            return getMatches ? matches : found;
-        }
+                
+                return getMatches ? matches : false;
+            },
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+            // 生成组合 (Generate Combinations)
+            generateCombinations(arrays) {
+                if (arrays.length === 0) return [[]];
+                const [first, ...rest] = arrays;
+                const subCombinations = this.generateCombinations(rest);
+                return first.flatMap(item => 
+                    subCombinations.map(combination => [item, ...combination])
+                );
+            },
+
+            // 清除缓存 (Clear Cache)
+            clearCache() {
+                this.variationCache.clear();
+            }
+        };
+
+        // ============================================
+        // MODULE 3: 数据管理器 (Data Manager)
+        // ============================================
+        const DataManager = {
+            keywords: [],
+            matchedKeywords: [],
+            unmatchedKeywords: [],
+
+            // 解析关键词 (Parse Keywords)
+            parseKeywords(input) {
+                if (!input.trim()) return [];
+                
+                return input
+                    .split(/[\n,，]/)
+                    .map(k => k.trim())
+                    .filter(k => k.length > 0)
+                    .map(k => this.normalizeKeyword(k))
+                    .filter(k => k.length > 0);
+            },
+
+            // 规范化关键词 (Normalize Keyword)
+            normalizeKeyword(text) {
+                return text
+                    .replace(/[\u4e00-\u9fa5]/g, '')
+                    .replace(/[^\w\s\-àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿßđðþąćęłńśźżăîșțčďěňřšťůž]/gi, '')
+                    .toLowerCase()
+                    .replace(/\s+/g, ' ')
+                    .trim();
+            },
+
+            // 去重 (Remove Duplicates)
+            removeDuplicates(keywords) {
+                const seen = new Set();
+                return keywords.filter(k => {
+                    const normalized = LanguageRules.removeDiacritics(k);
+                    if (seen.has(normalized)) return false;
+                    seen.add(normalized);
+                    return true;
+                });
+            },
+
+            // 检测重复 (Detect Duplicates)
+            detectDuplicates(keywords) {
+                const seen = new Set();
+                const duplicates = [];
+                
+                keywords.forEach(k => {
+                    const normalized = LanguageRules.removeDiacritics(k);
+                    if (seen.has(normalized)) {
+                        if (!duplicates.some(d => LanguageRules.removeDiacritics(d) === normalized)) {
+                            duplicates.push(k);
+                        }
+                    } else {
+                        seen.add(normalized);
+                    }
+                });
+                
+                return duplicates;
+            },
+
+            // 重置数据 (Reset Data)
+            reset() {
+                this.keywords = [];
+                this.matchedKeywords = [];
+                this.unmatchedKeywords = [];
+                KeywordEngine.clearCache();
+            }
+        };
+
+        // ============================================
+        // MODULE 4: UI控制器 (UI Controller)
+        // ============================================
+        const UIController = {
+            elements: {},
+
+            // 初始化 (Initialize)
+            init() {
+                this.cacheElements();
+                this.bindEvents();
+                this.updateCounts();
+            },
+
+            // 缓存DOM元素 (Cache DOM Elements)
+            cacheElements() {
+                this.elements = {
+                    keywordsInput: document.getElementById('keywordsInput'),
+                    textInput: document.getElementById('textInput'),
+                    keywordCount: document.getElementById('keywordCount'),
+                    textCount: document.getElementById('textCount'),
+                    duplicateAlert: document.getElementById('duplicateAlert'),
+                    languageAlert: document.getElementById('languageAlert'),
+                    highlightCard: document.getElementById('highlightResultCard'),
+                    highlightDisplay: document.getElementById('highlightDisplay'),
+                    resultsContainer: document.getElementById('resultsContainer'),
+                    totalCount: document.getElementById('totalCount'),
+                    matchedCount: document.getElementById('matchedCount'),
+                    unmatchedCount: document.getElementById('unmatchedCount'),
+                    matchRateDisplay: document.getElementById('matchRateDisplay'),
+                    popupOverlay: document.getElementById('popupOverlay'),
+                    popupTitle: document.getElementById('popupTitle'),
+                    popupContent: document.getElementById('popupContent'),
+                    scrollToTopBtn: document.getElementById('scrollToTopBtn'),
+                    tooltip: document.getElementById('tooltip')
+                };
+            },
+
+            // 绑定事件 (Bind Events)
+            bindEvents() {
+                this.elements.keywordsInput.addEventListener('input', () => {
+                    this.updateKeywordCount();
+                    this.checkDuplicates();
+                });
+                
+                this.elements.textInput.addEventListener('input', () => {
+                    this.updateTextCount();
+                });
+
+                window.addEventListener('scroll', () => {
+                    if (window.pageYOffset > 300) {
+                        this.elements.scrollToTopBtn.classList.add('show');
+                    } else {
+                        this.elements.scrollToTopBtn.classList.remove('show');
+                    }
+                });
+            },
+
+            // 更新计数 (Update Counts)
+            updateCounts() {
+                this.updateKeywordCount();
+                this.updateTextCount();
+            },
+
+            updateKeywordCount() {
+                const keywords = DataManager.parseKeywords(this.elements.keywordsInput.value);
+                this.elements.keywordCount.textContent = `${keywords.length} 个关键词`;
+            },
+
+            updateTextCount() {
+                this.elements.textCount.textContent = `${this.elements.textInput.value.length} 字符`;
+            },
+
+            // 检查重复 (Check Duplicates)
+            checkDuplicates() {
+                const keywords = DataManager.parseKeywords(this.elements.keywordsInput.value);
+                const duplicates = DataManager.detectDuplicates(keywords);
+                
+                if (duplicates.length > 0) {
+                    this.elements.duplicateAlert.innerHTML = `
+                        <div class="alert alert-warning">
+                            <span class="alert-icon">⚠️</span>
+                            <div>
+                                <strong>发现重复关键词：</strong><br>
+                                ${duplicates.join(', ')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    this.elements.duplicateAlert.innerHTML = '';
+                }
+            },
+
+            // 显示结果 (Show Results)
+            showResults(matchRate) {
+                this.elements.totalCount.textContent = DataManager.keywords.length;
+                this.elements.matchedCount.textContent = DataManager.matchedKeywords.length;
+                this.elements.unmatchedCount.textContent = DataManager.unmatchedKeywords.length;
+                
+                this.elements.matchRateDisplay.textContent = `${matchRate}%`;
+                this.elements.matchRateDisplay.className = 'match-rate-display';
+                
+                if (matchRate >= 80) {
+                    this.elements.matchRateDisplay.classList.add('match-rate-high');
+                } else if (matchRate >= 50) {
+                    this.elements.matchRateDisplay.classList.add('match-rate-medium');
+                } else {
+                    this.elements.matchRateDisplay.classList.add('match-rate-low');
+                }
+                
+                this.elements.resultsContainer.style.display = 'block';
+            },
+
+            // 显示Toast (Show Toast)
+            showToast(message) {
+                this.elements.tooltip.textContent = message;
+                this.elements.tooltip.style.left = '50%';
+                this.elements.tooltip.style.top = '50px';
+                this.elements.tooltip.style.transform = 'translateX(-50%)';
+                this.elements.tooltip.classList.add('show');
+                
+                setTimeout(() => {
+                    this.elements.tooltip.classList.remove('show');
+                }, 2000);
+            },
+
+            // HTML转义 (Escape HTML)
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        };
+
+        // ============================================
+        // MODULE 5: 应用逻辑 (Application Logic)
+        // ============================================
         
+        // 检查关键词 (Check Keywords)
         function checkKeywords() {
-            const keywordsInput = document.getElementById('keywordsInput').value;
-            const textInput = document.getElementById('textInput').value;
+            const keywordsInput = UIController.elements.keywordsInput.value;
+            const textInput = UIController.elements.textInput.value;
             
             if (!keywordsInput.trim() || !textInput.trim()) {
                 alert('请输入关键词和产品文案');
@@ -1356,150 +1288,129 @@
             checkBtn.innerHTML = '<span class="loading"></span> 检查中...';
             checkBtn.disabled = true;
             
-            setTimeout(() => {
-                keywords = parseKeywords(keywordsInput);
-                
-                // 去重
-                const seen = {};
-                const uniqueKeywords = [];
-                keywords.forEach(k => {
-                    const normalized = removeDiacritics(k);
-                    if (!seen[normalized]) {
-                        uniqueKeywords.push(k);
-                        seen[normalized] = true;
-                    }
-                });
-                keywords = uniqueKeywords;
-                
-                matchedKeywords = [];
-                unmatchedKeywords = [];
-                const allMatches = [];
-                
-                // 检查每个关键词
-                keywords.forEach(keyword => {
-                    const matches = checkKeywordWithVariations(keyword, textInput, true);
-                    if (matches && matches.length > 0) {
-                        matchedKeywords.push(keyword);
-                        allMatches.push(...matches);
-                    } else {
-                        unmatchedKeywords.push(keyword);
-                    }
-                });
-                
-                // 合并重叠的高亮区域
-                allMatches.sort((a, b) => a.start - b.start);
-                const mergedHighlights = [];
-                
-                allMatches.forEach(h => {
-                    if (mergedHighlights.length === 0) {
-                        mergedHighlights.push({...h});
-                    } else {
-                        const last = mergedHighlights[mergedHighlights.length - 1];
-                        if (h.start <= last.end) {
-                            last.end = Math.max(last.end, h.end);
+            // 使用 requestAnimationFrame 优化性能
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    // 解析并去重关键词
+                    let keywords = DataManager.parseKeywords(keywordsInput);
+                    keywords = DataManager.removeDuplicates(keywords);
+                    DataManager.keywords = keywords;
+                    
+                    DataManager.matchedKeywords = [];
+                    DataManager.unmatchedKeywords = [];
+                    const allMatches = [];
+                    
+                    // 检查每个关键词
+                    keywords.forEach(keyword => {
+                        const matches = KeywordEngine.checkMatch(keyword, textInput, true);
+                        if (matches && matches.length > 0) {
+                            DataManager.matchedKeywords.push(keyword);
+                            allMatches.push(...matches);
                         } else {
-                            mergedHighlights.push({...h});
+                            DataManager.unmatchedKeywords.push(keyword);
                         }
-                    }
-                });
-                
-                // 创建高亮文本
-                let highlightedText = '';
-                let lastIndex = 0;
-                
-                mergedHighlights.forEach(h => {
-                    highlightedText += escapeHtml(textInput.substring(lastIndex, h.start));
-                    highlightedText += `<span class="highlight">${escapeHtml(textInput.substring(h.start, h.end))}</span>`;
-                    lastIndex = h.end;
-                });
-                
-                highlightedText += escapeHtml(textInput.substring(lastIndex));
-                
-                // 显示高亮结果
-                const highlightCard = document.getElementById('highlightResultCard');
-                const highlightDisplay = document.getElementById('highlightDisplay');
-                highlightDisplay.innerHTML = highlightedText;
-                highlightCard.classList.add('show');
-                
-                // 显示语言支持提示
-                const languageAlert = document.getElementById('languageAlert');
-                languageAlert.innerHTML = `
-                    <div class="alert alert-info">
-                        <span class="alert-icon">🌍</span>
-                        <div>
-                            <strong>多语言智能匹配已启用</strong><br>
-                            已自动识别并匹配所有单复数、性别变化和变音符号
+                    });
+                    
+                    // 合并重叠高亮
+                    allMatches.sort((a, b) => a.start - b.start);
+                    const mergedHighlights = [];
+                    
+                    allMatches.forEach(h => {
+                        if (mergedHighlights.length === 0) {
+                            mergedHighlights.push({...h});
+                        } else {
+                            const last = mergedHighlights[mergedHighlights.length - 1];
+                            if (h.start <= last.end) {
+                                last.end = Math.max(last.end, h.end);
+                            } else {
+                                mergedHighlights.push({...h});
+                            }
+                        }
+                    });
+                    
+                    // 创建高亮文本
+                    let highlightedText = '';
+                    let lastIndex = 0;
+                    
+                    mergedHighlights.forEach(h => {
+                        highlightedText += UIController.escapeHtml(textInput.substring(lastIndex, h.start));
+                        highlightedText += `<span class="highlight">${UIController.escapeHtml(textInput.substring(h.start, h.end))}</span>`;
+                        lastIndex = h.end;
+                    });
+                    
+                    highlightedText += UIController.escapeHtml(textInput.substring(lastIndex));
+                    
+                    // 显示高亮结果
+                    UIController.elements.highlightDisplay.innerHTML = highlightedText;
+                    UIController.elements.highlightCard.classList.add('show');
+                    
+                    // 显示语言提示
+                    UIController.elements.languageAlert.innerHTML = `
+                        <div class="alert alert-info">
+                            <span class="alert-icon">🌍</span>
+                            <div>
+                                <strong>多语言智能匹配已启用</strong><br>
+                                已自动识别并匹配所有单复数、性别变化和变音符号
+                            </div>
                         </div>
-                    </div>
-                `;
-                
-                showResults();
-                
-                checkBtn.innerHTML = originalText;
-                checkBtn.disabled = false;
-                
-                highlightCard.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'start' 
-                });
-            }, 500);
+                    `;
+                    
+                    // 显示结果
+                    const matchRate = keywords.length > 0 
+                        ? (DataManager.matchedKeywords.length / keywords.length * 100).toFixed(1) 
+                        : 0;
+                    UIController.showResults(matchRate);
+                    
+                    // 恢复按钮
+                    checkBtn.innerHTML = originalText;
+                    checkBtn.disabled = false;
+                    
+                    // 滚动到结果
+                    UIController.elements.highlightCard.scrollIntoView({ 
+                        behavior: 'smooth', 
+                        block: 'start' 
+                    });
+                }, 100);
+            });
         }
-        
-        function showResults() {
-            const total = keywords.length;
-            const matched = matchedKeywords.length;
-            const unmatched = unmatchedKeywords.length;
-            const matchRate = total > 0 ? (matched / total * 100).toFixed(1) : 0;
-            
-            document.getElementById('totalCount').textContent = total;
-            document.getElementById('matchedCount').textContent = matched;
-            document.getElementById('unmatchedCount').textContent = unmatched;
-            
-            const rateDisplay = document.getElementById('matchRateDisplay');
-            rateDisplay.textContent = `${matchRate}%`;
-            rateDisplay.className = 'match-rate-display';
-            
-            if (matchRate >= 80) {
-                rateDisplay.classList.add('match-rate-high');
-            } else if (matchRate >= 50) {
-                rateDisplay.classList.add('match-rate-medium');
-            } else {
-                rateDisplay.classList.add('match-rate-low');
-            }
-            
-            document.getElementById('resultsContainer').style.display = 'block';
+
+        // 其他功能函数
+        function removeDuplicates() {
+            const input = UIController.elements.keywordsInput.value;
+            let keywords = DataManager.parseKeywords(input);
+            keywords = DataManager.removeDuplicates(keywords);
+            UIController.elements.keywordsInput.value = keywords.join('\n');
+            UIController.updateCounts();
+            UIController.checkDuplicates();
+            UIController.showToast('已去除重复关键词');
         }
-        
-        function showAllKeywords() {
-            showKeywords('all');
-        }
-        
+
         function showKeywords(type) {
             let keywordsList, title;
             
             switch(type) {
                 case 'all':
-                    keywordsList = keywords;
+                    keywordsList = DataManager.keywords;
                     title = '所有关键词';
                     break;
                 case 'matched':
-                    keywordsList = matchedKeywords;
+                    keywordsList = DataManager.matchedKeywords;
                     title = '已匹配关键词';
                     break;
                 case 'unmatched':
-                    keywordsList = unmatchedKeywords;
+                    keywordsList = DataManager.unmatchedKeywords;
                     title = '未匹配关键词';
                     break;
             }
             
-            const content = document.getElementById('popupContent');
+            const content = UIController.elements.popupContent;
             content.innerHTML = '';
             
             if (!keywordsList || keywordsList.length === 0) {
                 content.innerHTML = '<p style="text-align: center; color: var(--text-secondary);">暂无数据</p>';
             } else {
                 keywordsList.forEach(keyword => {
-                    const isMatched = matchedKeywords.includes(keyword);
+                    const isMatched = DataManager.matchedKeywords.includes(keyword);
                     const item = document.createElement('div');
                     item.className = 'keyword-item';
                     item.innerHTML = `
@@ -1515,28 +1426,32 @@
                 });
             }
             
-            document.getElementById('popupTitle').textContent = title;
-            document.getElementById('popupOverlay').style.display = 'flex';
+            UIController.elements.popupTitle.textContent = title;
+            UIController.elements.popupOverlay.style.display = 'flex';
         }
+
+        function showAllKeywords() { showKeywords('all'); }
         
         function closePopup(event) {
             if (!event || event.target.id === 'popupOverlay') {
-                document.getElementById('popupOverlay').style.display = 'none';
+                UIController.elements.popupOverlay.style.display = 'none';
             }
         }
-        
-        function copyKeyword(keyword) {
-            navigator.clipboard.writeText(keyword).then(() => {
-                showToast(`已复制: ${keyword}`);
-            }).catch(() => {
-                showToast('复制失败，请手动复制');
-            });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
+
+        function copyKeyword(keyword) {
+            navigator.clipboard.writeText(keyword)
+                .then(() => UIController.showToast(`已复制: ${keyword}`))
+                .catch(() => UIController.showToast('复制失败，请手动复制'));
+        }
+
         function copyKeywords(event) {
-            const keywords = document.getElementById('keywordsInput').value;
+            const keywords = UIController.elements.keywordsInput.value;
             if (!keywords.trim()) {
-                showToast('没有可复制的关键词');
+                UIController.showToast('没有可复制的关键词');
                 return;
             }
             
@@ -1545,27 +1460,21 @@
                 btn.classList.add('copied');
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '<span>✓</span> 已复制';
-                showToast('关键词复制成功');
+                UIController.showToast('关键词复制成功');
                 setTimeout(() => {
                     btn.classList.remove('copied');
                     btn.innerHTML = originalText;
                 }, 2000);
             }).catch(() => {
                 btn.classList.add('copy-failed');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<span>✗</span> 复制失败';
-                showToast('复制失败，请手动复制');
-                setTimeout(() => {
-                    btn.classList.remove('copy-failed');
-                    btn.innerHTML = originalText;
-                }, 2000);
+                UIController.showToast('复制失败，请手动复制');
             });
         }
-        
+
         function copyText(event) {
-            const text = document.getElementById('textInput').value;
+            const text = UIController.elements.textInput.value;
             if (!text.trim()) {
-                showToast('没有可复制的文案');
+                UIController.showToast('没有可复制的文案');
                 return;
             }
             
@@ -1574,99 +1483,66 @@
                 btn.classList.add('copied');
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '<span>✓</span> 已复制';
-                showToast('文案复制成功');
+                UIController.showToast('文案复制成功');
                 setTimeout(() => {
                     btn.classList.remove('copied');
                     btn.innerHTML = originalText;
                 }, 2000);
-            }).catch(() => {
-                btn.classList.add('copy-failed');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<span>✗</span> 复制失败';
-                showToast('复制失败，请手动复制');
-                setTimeout(() => {
-                    btn.classList.remove('copy-failed');
-                    btn.innerHTML = originalText;
-                }, 2000);
             });
         }
-        
+
         function copyUnmatchedKeywords(event) {
-            if (!unmatchedKeywords || unmatchedKeywords.length === 0) {
-                showToast('没有未匹配的关键词');
+            if (!DataManager.unmatchedKeywords || DataManager.unmatchedKeywords.length === 0) {
+                UIController.showToast('没有未匹配的关键词');
                 return;
             }
             
-            const text = unmatchedKeywords.join('\n');
+            const text = DataManager.unmatchedKeywords.join('\n');
             const btn = event.currentTarget;
             
             navigator.clipboard.writeText(text).then(() => {
                 btn.classList.add('copied');
                 const originalText = btn.innerHTML;
                 btn.innerHTML = '<span>✓</span> 复制成功！';
-                showToast(`已复制 ${unmatchedKeywords.length} 个未匹配关键词`);
+                UIController.showToast(`已复制 ${DataManager.unmatchedKeywords.length} 个未匹配关键词`);
                 setTimeout(() => {
                     btn.classList.remove('copied');
                     btn.innerHTML = originalText;
                 }, 2000);
-            }).catch(() => {
-                btn.classList.add('copy-failed');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<span>✗</span> 复制失败！';
-                showToast('复制失败，请手动复制');
-                setTimeout(() => {
-                    btn.classList.remove('copy-failed');
-                    btn.innerHTML = originalText;
-                }, 2000);
             });
         }
-        
+
         function resetKeywords() {
-            document.getElementById('keywordsInput').value = '';
-            document.getElementById('duplicateAlert').innerHTML = '';
-            document.getElementById('languageAlert').innerHTML = '';
-            updateKeywordCount();
-            showToast('关键词已重置');
+            UIController.elements.keywordsInput.value = '';
+            UIController.elements.duplicateAlert.innerHTML = '';
+            UIController.elements.languageAlert.innerHTML = '';
+            UIController.updateKeywordCount();
+            UIController.showToast('关键词已重置');
         }
-        
+
         function resetText() {
-            document.getElementById('textInput').value = '';
-            
-            const highlightCard = document.getElementById('highlightResultCard');
-            highlightCard.classList.remove('show');
-            document.getElementById('highlightDisplay').innerHTML = '';
-            
-            updateTextCount();
-            showToast('文案已重置');
+            UIController.elements.textInput.value = '';
+            UIController.elements.highlightCard.classList.remove('show');
+            UIController.elements.highlightDisplay.innerHTML = '';
+            UIController.updateTextCount();
+            UIController.showToast('文案已重置');
         }
-        
+
         function resetAll() {
             resetKeywords();
             resetText();
-            document.getElementById('resultsContainer').style.display = 'none';
-            keywords = [];
-            matchedKeywords = [];
-            unmatchedKeywords = [];
-            showToast('所有内容已重置');
+            UIController.elements.resultsContainer.style.display = 'none';
+            DataManager.reset();
+            UIController.showToast('所有内容已重置');
         }
-        
-        function showToast(message) {
-            const tooltip = document.getElementById('tooltip');
-            tooltip.textContent = message;
-            tooltip.style.left = '50%';
-            tooltip.style.top = '50px';
-            tooltip.style.transform = 'translateX(-50%)';
-            tooltip.classList.add('show');
-            
-            setTimeout(() => {
-                tooltip.classList.remove('show');
-            }, 2000);
-        }
-        
+
+        // ============================================
+        // 初始化应用 (Initialize Application)
+        // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            updateKeywordCount();
-            updateTextCount();
+            UIController.init();
             
+            // 添加动画效果
             const cards = document.querySelectorAll('.card');
             cards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.1}s`;
