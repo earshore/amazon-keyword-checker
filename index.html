@@ -381,6 +381,38 @@
             50% { box-shadow: 0 0 8px 2px rgba(255, 193, 7, 0.4); }
         }
 
+        /* 重复关键词高亮样式 */
+        .highlight-repeat {
+            background: linear-gradient(120deg, #FF6B6B 0%, #FF8E53 100%);
+            color: #4A0000;
+            font-weight: 700;
+            animation: highlightPulseRepeat 1.5s ease infinite;
+        }
+
+        @keyframes highlightPulseRepeat {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.5); }
+            50% { box-shadow: 0 0 12px 3px rgba(255, 107, 107, 0.6); }
+        }
+
+        /* 高频重复关键词（3次以上）*/
+        .highlight-high-repeat {
+            background: linear-gradient(120deg, #9D50BB 0%, #6E48AA 100%);
+            color: #FFFFFF;
+            font-weight: 700;
+            animation: highlightPulseHigh 1s ease infinite;
+        }
+
+        @keyframes highlightPulseHigh {
+            0%, 100% { 
+                box-shadow: 0 0 0 0 rgba(157, 80, 187, 0.6);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 15px 4px rgba(157, 80, 187, 0.8);
+                transform: scale(1.02);
+            }
+        }
+
         .results-container {
             margin-top: 40px;
             padding: 30px;
@@ -1337,11 +1369,21 @@
                     DataManager.unmatchedKeywords = [];
                     const allMatches = [];
                     
-                    // 检查每个关键词
+                    // 检查每个关键词，并记录每个匹配的关键词信息
+                    const keywordMatchMap = new Map(); // 记录每个关键词的匹配次数和位置
+                    
                     keywords.forEach(keyword => {
                         const matches = KeywordEngine.checkMatch(keyword, textInput, true);
                         if (matches && matches.length > 0) {
                             DataManager.matchedKeywords.push(keyword);
+                            keywordMatchMap.set(keyword, matches.length); // 记录匹配次数
+                            
+                            // 为每个匹配添加关键词标记
+                            matches.forEach(match => {
+                                match.keyword = keyword;
+                                match.count = matches.length;
+                            });
+                            
                             allMatches.push(...matches);
                         } else {
                             DataManager.unmatchedKeywords.push(keyword);
@@ -1365,13 +1407,25 @@
                         }
                     });
                     
-                    // 创建高亮文本
+                    // 创建高亮文本 - 根据出现次数应用不同颜色
                     let highlightedText = '';
                     let lastIndex = 0;
                     
                     mergedHighlights.forEach(h => {
                         highlightedText += UIController.escapeHtml(textInput.substring(lastIndex, h.start));
-                        highlightedText += `<span class="highlight">${UIController.escapeHtml(textInput.substring(h.start, h.end))}</span>`;
+                        
+                        // 根据匹配次数决定高亮样式
+                        let highlightClass = 'highlight';
+                        if (h.count && h.count >= 3) {
+                            highlightClass = 'highlight highlight-high-repeat';
+                        } else if (h.count && h.count === 2) {
+                            highlightClass = 'highlight highlight-repeat';
+                        }
+                        
+                        const matchedText = UIController.escapeHtml(textInput.substring(h.start, h.end));
+                        const title = h.count ? `此关键词在文案中出现 ${h.count} 次` : '';
+                        
+                        highlightedText += `<span class="${highlightClass}" title="${title}">${matchedText}</span>`;
                         lastIndex = h.end;
                     });
                     
