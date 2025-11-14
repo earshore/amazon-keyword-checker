@@ -363,6 +363,21 @@
             white-space: pre-wrap;
             word-wrap: break-word;
             word-break: break-all;
+            outline: none;
+            cursor: text;
+            transition: var(--transition);
+        }
+
+        .highlight-display:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.1);
+            background: white;
+        }
+
+        .highlight-display:empty:before {
+            content: '点击"检查关键词"按钮后，此处将显示高亮结果...';
+            color: var(--text-secondary);
+            font-style: italic;
         }
 
         .highlight {
@@ -813,9 +828,20 @@
             <div id="highlightResultCard" class="highlight-result-card">
                 <h2 class="card-title">
                     <span class="icon">✨</span>
-                    高亮显示已匹配关键词(不同颜色显示为重复出现的关键词)
+                    高亮显示已匹配关键词
+                    <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal; margin-left: auto;">
+                        💡 可直接编辑文本内容
+                    </span>
                 </h2>
-                <div id="highlightDisplay" class="highlight-display"></div>
+                <div id="highlightDisplay" class="highlight-display" contenteditable="true" spellcheck="false"></div>
+                <div class="button-group" style="margin-top: 15px;">
+                    <button class="btn btn-secondary" onclick="copyHighlightedText(event)">
+                        <span>📋</span> 复制高亮文本
+                    </button>
+                    <button class="btn btn-primary" onclick="syncToProductCopy()">
+                        <span>⬆️</span> 同步到产品文案
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -1625,6 +1651,64 @@
             UIController.elements.resultsContainer.style.display = 'none';
             DataManager.reset();
             UIController.showToast('所有内容已重置');
+        }
+
+        // 复制高亮文本（仅纯文本，不含HTML标签）
+        function copyHighlightedText(event) {
+            const highlightDisplay = UIController.elements.highlightDisplay;
+            const plainText = highlightDisplay.innerText || highlightDisplay.textContent;
+            
+            if (!plainText.trim()) {
+                UIController.showToast('没有可复制的内容');
+                return;
+            }
+            
+            const btn = event.currentTarget;
+            navigator.clipboard.writeText(plainText).then(() => {
+                btn.classList.add('copied');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<span>✓</span> 已复制';
+                UIController.showToast('高亮文本复制成功');
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = originalText;
+                }, 2000);
+            }).catch(() => {
+                btn.classList.add('copy-failed');
+                UIController.showToast('复制失败，请手动复制');
+                setTimeout(() => {
+                    btn.classList.remove('copy-failed');
+                }, 2000);
+            });
+        }
+
+        // 同步编辑后的内容到产品文案
+        function syncToProductCopy() {
+            const highlightDisplay = UIController.elements.highlightDisplay;
+            const plainText = highlightDisplay.innerText || highlightDisplay.textContent;
+            
+            if (!plainText.trim()) {
+                UIController.showToast('没有可同步的内容');
+                return;
+            }
+            
+            // 更新产品文案输入框
+            UIController.elements.textInput.value = plainText;
+            UIController.updateTextCount();
+            
+            UIController.showToast('已同步到产品文案，可重新检查关键词');
+            
+            // 滚动到产品文案区域
+            UIController.elements.textInput.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+            
+            // 高亮产品文案输入框
+            UIController.elements.textInput.focus();
+            setTimeout(() => {
+                UIController.elements.textInput.blur();
+            }, 1000);
         }
 
         // ============================================
